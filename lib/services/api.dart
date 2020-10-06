@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chalee/model/json/GetOrder.dart';
 import 'package:chalee/model/json/Location.dart';
 import 'package:chalee/model/json/ProductModel.dart';
 import 'package:chalee/model/json/ShopModel.dart';
