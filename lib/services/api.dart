@@ -1,0 +1,193 @@
+import 'dart:convert';
+
+import 'package:chalee/model/json/Location.dart';
+import 'package:chalee/model/json/ProductModel.dart';
+import 'package:chalee/model/json/ShopModel.dart';
+import 'package:chalee/model/json/User.dart';
+import 'package:chalee/model/local/DetailProduct.dart';
+import 'package:chalee/screens/SelectionActivity.dart';
+import 'package:chalee/screens/VerificationActivity.dart';
+import 'package:chalee/util/Constant.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+String url = "https://newreza.ir/chale/php/customer/";
+
+//login //ok
+Future<String> login(UserRegister userRegister,
+    GlobalKey<ScaffoldState> globalKey) async {
+  User driver;
+  String str;
+  print(userRegister.username);
+  print(userRegister.password);
+
+
+  var response = http.post(
+    url + "login.php",
+    body: userRegisterToJson(userRegister),
+  );
+  response.then((value) {
+    print(value.body);
+    if (jsonDecode(value.body)["result"] == "ok") {
+      str="ok";
+      driver = userFromJson(value.body);
+      Constant.user = driver;
+      Navigator.pushReplacement(globalKey.currentContext,
+        MaterialPageRoute(builder: (context) => SelectionActivity(),),);
+    } else if (jsonDecode(value.body)["result"] == "no_user") {
+      str="ok";
+      globalKey.currentState.showSnackBar(
+          Constant.snak("user Not found , please sign up"));
+    } else {
+      str="ok";
+      globalKey.currentState.showSnackBar(Constant.snak(" no verification"));
+      //go to sms_verification
+      Navigator.push(globalKey.currentContext, MaterialPageRoute(
+        builder: (context) => VerificationActivity(mobile: userRegister.username,),),);
+    }
+  }).catchError((error) {
+    globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
+  });
+  return str;
+}
+void printWrapped(String text) {
+  final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+  pattern.allMatches(text).forEach((match) => print(match.group(0)));
+
+}
+//registry
+Future<String> registry(UserRegister user,
+    GlobalKey<ScaffoldState> globalKey) async {
+  String result;
+
+  var response = http.post(
+    url + "registry.php",
+    body: userRegisterToJson(user),
+  );
+  response.then((value) {
+    result = jsonDecode(value.body)["result"];
+  }).catchError((error) {
+    return error;
+  });
+  return result;
+}
+
+//get_shops.php
+Future<List<Shop>> getShopType(ShopRequestType shopRequestType,
+    GlobalKey<ScaffoldState> globalKey) async {
+  List<Shop> shops = [];
+
+  var response = await http.post(
+    url + "get_shops.php",
+    body: shopRequestTypeToJson(shopRequestType),
+  ).catchError((error) {
+  globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
+  });
+
+  ResopnsShop respnse = resopnsShopFromJson(response.body);
+  if (respnse.result == "ok") {
+    shops = respnse.shops;
+
+  } else {
+    //no shop
+  }
+
+
+  return shops;
+}
+
+
+//get_confirmation_code
+Future<String> getCode(String user, GlobalKey<ScaffoldState> globalKey) async {
+  Map<String, dynamic> jsonBody = {"username": user};
+
+  var response = http.post(
+    url + "get_confirmation_code.php",
+    body: json.encode(jsonBody),
+  );
+  response.then((value) {
+    String result = jsonDecode(value.body)["result"];
+    switch (result) {
+      case "ok":
+        //todo
+       // return
+    }
+  }).catchError((error) {
+    globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
+  });
+}
+
+//post_confirmation_code.php
+Future<void> sendCode(String user, String code,
+    GlobalKey<ScaffoldState> globalKey) async {
+  Map<String, dynamic> jsonBody = {"username": user, "code": code};
+
+  var response = http.post(
+    url + "post_confirmation_code.php",
+    body: json.encode(jsonBody),
+  );
+  response.then((value) {
+    //todo handle
+  }).catchError((error) {
+    return error;
+  });
+}
+
+//get_goods.php
+//todo
+
+Future<DetailProductModel> getProducts(ShopProductRequest request,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  DetailProductModel model ;
+  List<SubCategories> subCategories=[];
+  List<ProductModel> productModels=[];
+
+  var response = await http.post(
+    url + "get_goods.php",
+    body: shopProductRequestToJson(request),
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+
+  if(result["result"] == "ok"){
+    //subCategories=subCategoriesListFromJson(result["subcategories"]);
+    for(final i in result["subcategories"])
+        subCategories.add(new SubCategories(i["id"],i["name"]));
+      
+    for(final i in result["goods"])
+      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"])));
+    //print(result["goods"]);
+   // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
+  }
+  model=DetailProductModel(listSub: subCategories,products: productModels);
+
+
+  return model;
+}
+
+//add_address.php
+Future<void> addAddress(LocationModel request,
+    GlobalKey<ScaffoldState> globalKey) async {
+  var response = http.post(
+    url + "add_address.php",
+    body: json.encode(request),
+  );
+  response.then((value) {
+    String result = jsonDecode(value.body)["result"];
+    if(result == "ok"){
+      //todo replacement 2 way: home , profile
+    }
+  }).catchError((error) {
+    return error;
+  });
+
+}
+
+
+
+
