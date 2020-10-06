@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OrderHistoryElement extends StatelessWidget{
+  String id;
+  String date;
+  String price;
+  OrderHistoryElement(this.id,this.date,this.price);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,13 +24,13 @@ class OrderHistoryElement extends StatelessWidget{
       height: 150.h,
       child: Row(
         children: [
-          Text("#123" ,style: TextStyle(color: ColorApp.primary , fontFamily: "main"),),
+          Text(id ,style: TextStyle(color: ColorApp.primary , fontFamily: "main"),),
           Expanded(child: SizedBox(),),
           Column(
             children: [
-              Text("\$120"),
+              Text(price),
               Expanded(child: SizedBox()),
-              Text("1399/01/03" , style: TextStyle(color: Colors.grey)),
+              Text(date , style: TextStyle(color: Colors.grey)),
             ],
           )
         ],

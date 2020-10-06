@@ -190,4 +190,41 @@ Future<void> addAddress(LocationModel request,
 
 
 
+Future<List<Orders>> getOrder(String username,String password,String rangeId,
+    GlobalKey<ScaffoldState> globalKey) async {
+List <Orders> orders=[];
+
+  Map<String , dynamic> map = {
+    "username": username,
+    "password": password,
+    "range_id": rangeId
+  };
+  var response = await http.post(
+    url + "get_orders.php",
+    body: map,
+  ).catchError((error) {
+    print(error.toString()+"******************************");
+    return orders;
+  });
+
+
+  var result = jsonDecode(response.body);
+  print(result);
+  if(result["result"] == "ok"){
+    //subCategories=subCategoriesListFromJson(result["subcategories"]);
+    for(final i in result["orders"])
+     {
+       List<Goods> goods=[];
+       for(final j in i["goods"])
+         goods.add(new Goods(j["id"],j["name"],j["image_url"],j["price"],j["discount"],j["count"]));
+       orders.add(new Orders(i["id"],i["shop_id"],i["shop_name"],i["shop_image_url"],i["shop_accept_time"],i["total_payment"],i["time"],i["status"],goods));
+}
+          }
+    //print(result["goods"]);
+    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
+return orders;
+
+
+}
+
 
