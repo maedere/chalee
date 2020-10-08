@@ -42,7 +42,6 @@ class _MenuState extends State<Menu> {
           for(final i in value.products)
              {
                _listProduct.add(i);
-               print(i.calory);
              }
 
 
@@ -126,7 +125,6 @@ class _MenuState extends State<Menu> {
                 childAspectRatio: 1,
                 children: //_listProduct.length > 0 ?
                     _listProduct.map((e){
-                      print("not fake");
                       return _productMenu(e);
                     }).toList()
                     /*: Faker.listP.map((e) {
@@ -194,6 +192,7 @@ class _MenuState extends State<Menu> {
               description: product.description,
               finalPrice: (product.price-product.discount*product.price/100).toStringAsFixed(2),
               calory: product.calory,
+              spicy : product.spicy,
             ),
           ),
         );

@@ -10,8 +10,9 @@ class Detail extends StatefulWidget {
   final String description;
   final String finalPrice;
   final String calory;
+  final String spicy;
 
-  Detail({@required this.image, @required this.heroTag, this.description, this.finalPrice, this.calory});
+  Detail({@required this.image, @required this.heroTag, this.description, this.finalPrice, this.calory,this.spicy});
 
   @override
   _DetailState createState() => _DetailState();
@@ -39,14 +40,15 @@ class _DetailState extends State<Detail> {
               tag: widget.heroTag,
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15.h, horizontal:15.w),
-                decoration: BoxDecoration(
+                /*decoration: BoxDecoration(
                   image: DecorationImage(
 
                     image: AssetImage(
                       widget.image,
                     ),
                   ),
-                ),
+                ),*/
+                child: Image.network(widget.image),
               ),
             ),),
           ),
@@ -112,7 +114,19 @@ class _DetailState extends State<Detail> {
                       SizedBox(width: 20.w,),
                       Text("${widget.calory} kcal" , style: TextStyle(color: ColorApp.primary,fontSize: 17 , fontFamily: "main"),),
                       Expanded(child: SizedBox(),),
-                      Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+
+                      if(widget.spicy=="0")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+                      if(widget.spicy=="1")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+                     if(widget.spicy=="2")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+                     if(widget.spicy=="3")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+                     if(widget.spicy=="4")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
+                     if(widget.spicy=="5")
+                        Image(image: AssetImage("assets/images/hell.png",),height: 40,),
                     ],
                   ),
                   SizedBox(height: 30.h,),
