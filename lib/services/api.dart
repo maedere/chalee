@@ -210,7 +210,6 @@ List <Orders> orders=[];
 
 
   var result = jsonDecode(response.body);
-  print(result);
   if(result["result"] == "ok"){
     //subCategories=subCategoriesListFromJson(result["subcategories"]);
     for(final i in result["orders"])
