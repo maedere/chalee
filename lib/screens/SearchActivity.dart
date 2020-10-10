@@ -38,6 +38,7 @@ class _SearchActivityState extends State<SearchActivity> {
         search: ""
     ) , _key).then((value){
       setState(() {
+        print("here");
         if(shops != null) {
           shops = value;
         }

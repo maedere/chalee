@@ -1,6 +1,8 @@
 import 'package:chalee/elements/CartItem.dart';
+import 'package:chalee/model/json/GetOrder.dart';
 import 'package:chalee/model/local/MainCatagory.dart';
 import 'package:chalee/screens/SearchActivity.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/util/Constant.dart';
 import 'package:chalee/util/faker.dart';
 import 'package:chalee/value/ColorApp.dart';
@@ -8,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CheckOut extends StatefulWidget {
   @override
@@ -19,19 +22,25 @@ class _CheckOutState extends State<CheckOut> {
   bool two = false;
   bool three = false;
   bool four = false;
+  bool finishone=false;
+  bool finishThree=false;
 
+  String orderStatus="";
+  String orderTime="";
+
+  bool cashPayment=false;
   bool enable = false;
   bool enable2 = false;
 
-  double totalprice=0;
-  double finalprice=0;
+  double totalPrice=0;
+  double finalPrice=0;
   int _currentIndex = 0;
   Widget Choosed;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   TextEditingController nameController = new TextEditingController();
-  TextEditingController phonenumberController = new TextEditingController();
-  TextEditingController prefixphoneController=new TextEditingController();
+  TextEditingController phoneNumberController = new TextEditingController();
+  TextEditingController prefixPhoneController=new TextEditingController();
   TextEditingController emailController=new TextEditingController();
   TextEditingController companyController=new TextEditingController();
   TextEditingController descriptionController=new TextEditingController();
@@ -39,6 +48,7 @@ class _CheckOutState extends State<CheckOut> {
 
   @override
   Widget build(BuildContext context) {
+
 
     if(!enable){
 
@@ -120,11 +130,11 @@ class _CheckOutState extends State<CheckOut> {
       ];
     }
 
-    totalprice=0;
-    finalprice=0;
+    totalPrice=0;
+    finalPrice=0;
     for(final i in Constant.orders) {
-      totalprice = totalprice + i.price*i.count;
-      finalprice=finalprice+(i.price-i.price*i.discount/100)*i.count;
+      totalPrice = totalPrice + i.price*i.count;
+      finalPrice=finalPrice+(i.price-i.price*i.discount/100)*i.count;
     }
     switch (_currentIndex) {
       case 0:
@@ -291,32 +301,73 @@ class _CheckOutState extends State<CheckOut> {
           GestureDetector(
             onTap: () {
               if (four) {
-                Constant.track = true;
+                if(orderStatus=="ok")
+                  {Constant.track = true;
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
                     builder: (context) => SearchActivity(
-                      mainCatagory: MainCatagory(id: 1, title: null, url: null),
+                      mainCatagory: MainCatagory(id: 1, title: "Restaurant", url: "assets/images/resturant.png"),
                     ),
                   ),
-                );
+                );}
+                else{
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SearchActivity(
+                        mainCatagory: MainCatagory(id: 0, title: "Restaurant", url: "assets/images/resturant.png"),
+                      ),
+                    ),
+                  );
+                }
               } else {
-                if(one)
+                if(one && finishone==false)
                   {
-                    print("twooo");
-                    if((phonenumberController.text!="" && prefixphoneController.text!="")
+                    if((phoneNumberController.text!="" && prefixPhoneController.text!="")
                   && nameController.text!="")
                     setState(() {
-                      one=false;
+                       finishone=true;
                       _currentIndex++;
                     });
                   else  _scaffoldKey.currentState.showSnackBar(Constant.snak("Enter the required values"));
 
                   }
-                 else if(two){
-                  print("three");
+                 else if(two && finishThree==false){
 
+                  List<SimpleGood> simpleGoods=[];
+                  for(final i in Constant.orders) {
+                    simpleGoods.add(new SimpleGood(i.id, i.name));
 
+                  }
+                  SharedPreferences sharedPrefs;
+                  SharedPreferences.getInstance().then((prefs) {
+                    sharedPrefs = prefs;
+                    addOrder(
+                        sharedPrefs.getString("username"),
+                        sharedPrefs.getString("password"),
+                        Constant.orders[0].shopId.toString(),
+                        nameController.text,
+                        prefixPhoneController.text + phoneNumberController.text,
+                        emailController.text,
+                        companyController.text,
+                        sharedPrefs.getString("address1"),
+                        sharedPrefs.getString("lat"),
+                        sharedPrefs.getString("lng"),
+                        "",
+                        descriptionController.text,
+                        cashPayment == true ? "cash" : "online",
+                        simpleGoods,
+                        _scaffoldKey).then((value) {
+                      setState(() {
+                        orderStatus=value["result"];
+                        orderTime=value["time"];
+                        _currentIndex++;
+                        finishThree=true;
+
+                      });
+                    });
+                  });
                 }else
                 setState(() {
                     _currentIndex++;
@@ -370,7 +421,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "\$${(totalprice).toStringAsFixed(2)}",
+                    "\$${(totalPrice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -414,7 +465,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "\$${(totalprice-finalprice).toStringAsFixed(2)}",
+                    "\$${(totalPrice-finalPrice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -442,7 +493,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                  "\$${(finalprice).toStringAsFixed(2)}",
+                  "\$${(finalPrice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -466,72 +517,87 @@ class _CheckOutState extends State<CheckOut> {
           Row(
             children: [
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(
-                        5,
-                      ),
-                      bottomLeft: Radius.circular(
-                        5,
-                      ),
-                    ),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Cash Payment",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "main",
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+                      cashPayment=true;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+
+                      color: cashPayment==false? Colors.grey[300]:ColorApp.primary,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(
+                          5,
+                        ),
+                        bottomLeft: Radius.circular(
+                          5,
                         ),
                       ),
-                      Expanded(child: SizedBox()),
-                      Image(
-                        image: AssetImage("assets/images/delivery.png"),
-                        width: 24,
-                        height: 24,
-                        color: Colors.black,
-                      ),
-                    ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          "Cash Payment",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "main",
+                          ),
+                        ),
+                        Expanded(child: SizedBox()),
+                        Image(
+                          image: AssetImage("assets/images/delivery.png"),
+                          width: 24,
+                          height: 24,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: ColorApp.primary,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(
-                        5,
-                      ),
-                      bottomRight: Radius.circular(
-                        5,
-                      ),
-                    ),
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
-                  child: Row(
-                    children: [
-                      Text(
-                        "PayPal",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "main",
+                child: InkWell(
+                  onTap: (){
+                    setState(() {
+                      cashPayment=false;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: cashPayment==true? Colors.grey[300]:ColorApp.primary,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(
+                          5,
+                        ),
+                        bottomRight: Radius.circular(
+                          5,
                         ),
                       ),
-                      Expanded(child: SizedBox()),
-                      Image(
-                        image: AssetImage("assets/images/card.png"),
-                        width: 24,
-                        height: 24,
-                        color: Colors.black,
-                      ),
-                    ],
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 25.h),
+                    child: Row(
+                      children: [
+                        Text(
+                          "PayPal",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontFamily: "main",
+                          ),
+                        ),
+                        Expanded(child: SizedBox()),
+                        Image(
+                          image: AssetImage("assets/images/card.png"),
+                          width: 24,
+                          height: 24,
+                          color: Colors.black,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -551,7 +617,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$${totalprice.toStringAsFixed(2)}",
+                "\$${totalPrice.toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -595,7 +661,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$${(totalprice-finalprice).toStringAsFixed(2)}",
+                "\$${(totalPrice-finalPrice).toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -623,7 +689,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$${finalprice.toStringAsFixed(2)}",
+                "\$${finalPrice.toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -673,7 +739,7 @@ class _CheckOutState extends State<CheckOut> {
               Expanded(
                 flex: 1,
                 child: TextField(
-                  controller: prefixphoneController,
+                  controller: prefixPhoneController,
                   decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       hintText: "0971"),
@@ -685,7 +751,7 @@ class _CheckOutState extends State<CheckOut> {
               Expanded(
                 flex: 4,
                 child: TextField(
-                  controller: phonenumberController,
+                  controller: phoneNumberController,
                   decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       hintText: "1234567"),
@@ -872,6 +938,8 @@ class _CheckOutState extends State<CheckOut> {
   }
 
   Widget _FourWidget() {
+    if(orderStatus=="ok")
+    {if(cashPayment)
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -888,6 +956,67 @@ class _CheckOutState extends State<CheckOut> {
         ],
       ),
     );
+    else{
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50.h,
+            ),
+            Text("online payment should be implemented")
+          ],
+        ),
+      );
+    }}else if(orderStatus=="no_user"){
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50.h,
+            ),
+            Text("no_user")
+          ],
+        ),
+      );
+    }else if(orderStatus=="no_good"){
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50.h,
+            ),
+            Text("no_good")
+          ],
+        ),
+      );
+    }else if(orderStatus=="not_enough_goods"){
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50.h,
+            ),
+            Text("not_enugh_goods")
+          ],
+        ),
+      );
+    }else if(orderStatus=="shop_closed"){
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50.h,
+            ),
+            Text("shop_closed")
+          ],
+        ),
+      );
+    }
   }
 
   Widget CartChoose(Item item) {

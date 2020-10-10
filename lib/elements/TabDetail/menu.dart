@@ -33,6 +33,7 @@ class _MenuState extends State<Menu> {
 
   @override
   void initState() {
+
     getProducts(ShopProductRequest(shopId: widget.shopId , rangeId: 0 , subcategoryId: "-1"), _key).then((value){
       setState(() {
         if(value != null) {
