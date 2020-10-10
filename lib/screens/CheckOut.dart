@@ -307,15 +307,19 @@ class _CheckOutState extends State<CheckOut> {
                     if((phonenumberController.text!="" && prefixphoneController.text!="")
                   && nameController.text!="")
                     setState(() {
+                      one=false;
                       _currentIndex++;
                     });
                   else  _scaffoldKey.currentState.showSnackBar(Constant.snak("Enter the required values"));
 
                   }
-                else
-                setState(() {
+                 else if(two){
+                  print("three");
 
-                  _currentIndex++;
+
+                }else
+                setState(() {
+                    _currentIndex++;
 
                 });
               }

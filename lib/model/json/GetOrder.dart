@@ -42,6 +42,12 @@ class Orders {
 
 
 }
+class SimpleGood{
+  String id;
+  String name;
+
+  SimpleGood(this.id, this.name);
+}
 
 class Goods {
   Goods(
@@ -52,6 +58,8 @@ class Goods {
     this.discount,
     this.count,
   );
+
+
 
   String id;
   String name;

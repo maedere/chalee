@@ -51,7 +51,9 @@ Future<String> login(UserRegister userRegister,
   }).catchError((error) {
     globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
   });
-  
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("username",userRegister.username);
+  prefs.setString("password", userRegister.password);//maed
   return str;
 }
 void printWrapped(String text) {
@@ -230,4 +232,57 @@ return orders;
 
 }
 
+/*
 
+Future<DetailProductModel> addOrder(String username,String password,String shop_id,
+    String name,String phone,String mail,
+    String company,String address,String lat,String lng,String vehicle_code,
+    String description,String payment_method,List<SimpleGood> simplegoods,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  Map<String , dynamic> map = {
+    "username": username,
+    "password": password,
+    "shop_id": shop_id,
+    "name": name,
+    "phone": phone,
+    "mail": mail,
+    "company": company,
+    "address": address,
+    "lat": lat,
+    "lng": lng,
+    "vehicle_code": vehicle_code,
+    "lat": lat,
+    "lat": lat,
+  };
+  DetailProductModel model ;
+  List<SubCategories> subCategories=[];
+  List<ProductModel> productModels=[];
+
+  var response = await http.post(
+    url + "get_goods.php",
+    body: shopProductRequestToJson(request),
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+
+  if(result["result"] == "ok"){
+    //subCategories=subCategoriesListFromJson(result["subcategories"]);
+    for(final i in result["subcategories"])
+      subCategories.add(new SubCategories(i["id"],i["name"]));
+
+    for(final i in result["goods"])
+      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"]),0));
+    //print(result["goods"]);
+    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
+  }
+  model=DetailProductModel(listSub: subCategories,products: productModels);
+
+
+  return model;
+}
+*/
