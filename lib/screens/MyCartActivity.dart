@@ -17,6 +17,11 @@ class MyCartActivity extends StatefulWidget {
 class _MyCartActivityState extends State<MyCartActivity> {
   @override
   Widget build(BuildContext context) {
+     List<ProductModel> orders1 = [];
+     for(final i in Constant.orders)
+     { if(i.count!=0)
+       orders1.add(i);}
+     Constant.orders=orders1;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -36,11 +41,15 @@ class _MyCartActivityState extends State<MyCartActivity> {
         color: Colors.grey[300],
         child: Stack(
           children: [
+
+
             Constant.orders.length == 0 ? SizedBox():
            ListView.builder(
              itemCount: Constant.orders.length,
                itemBuilder: (context , i){
-                return _CartItemData(Constant.orders[i]);
+                  return _CartItemData(Constant.orders[i]);
+
+
               }),
             Align(
               alignment: AlignmentDirectional.bottomCenter,
@@ -69,6 +78,7 @@ class _MyCartActivityState extends State<MyCartActivity> {
   }
 
   Widget _CartItemData(ProductModel model){
+
     return Card(
       elevation: 4,
       color: Colors.white,
@@ -80,14 +90,10 @@ class _MyCartActivityState extends State<MyCartActivity> {
       ),
       child: Container(
         padding: EdgeInsets.all(5),
-        height: 300.h,
+        height: 320.h,
         child: Row(
           children: [
-            Image(
-              image: AssetImage(model.image),
-              width: 80,
-              height: 80,
-            ),
+            Image.network(model.image,height: 80,width:80 ),
             SizedBox(
               width: 5,
             ),
@@ -96,7 +102,7 @@ class _MyCartActivityState extends State<MyCartActivity> {
                 SizedBox(
                   height: 10,
                 ),
-                Text("test item 1"),
+                Text(model.name),
                 SizedBox(
                   height: 5,
                 ),
@@ -111,7 +117,7 @@ class _MyCartActivityState extends State<MyCartActivity> {
                   child: SizedBox(),
                 ),
                 Text(
-                  "\$10  ",
+                  (model.price-model.discount*model.price/100).toStringAsFixed(2),
                   style: TextStyle(color: Colors.red, fontSize: 15),
                 ),
                 SizedBox(
@@ -139,7 +145,11 @@ class _MyCartActivityState extends State<MyCartActivity> {
                     IconButton(icon : Icon(Icons.remove_circle_outline,
                         size: 23, color: Colors.grey),onPressed: (){
                       setState(() {
-                        model.count--;
+                        if(model.count-1>0)
+                          model.count--;
+                        /*else
+                          Constant.orders.remove(model);*/
+
                       });
                     }),
                     Text(model.count.toString() , textAlign: TextAlign.center,),
@@ -151,7 +161,8 @@ class _MyCartActivityState extends State<MyCartActivity> {
                         ),
                         onPressed: (){
                           setState(() {
-                            model.count++;
+                            if(model.count+1<=model.available)
+                              model.count++;
                           });
                         }),
                   ],

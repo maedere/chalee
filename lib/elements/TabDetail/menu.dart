@@ -22,8 +22,11 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   bool check = false;
+  String dropdownValue = "Select Category";
+  String categoryid="";
 
   List<SubCategories> _listSub = [];
+  List<ProductModel> _listProductShow = [];
   List<ProductModel> _listProduct = [];
 
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
@@ -32,20 +35,35 @@ class _MenuState extends State<Menu> {
   void initState() {
     getProducts(ShopProductRequest(shopId: widget.shopId , rangeId: 0 , subcategoryId: "-1"), _key).then((value){
       setState(() {
-        print(widget.shopId);
         if(value != null) {
           // _listSub = value.listSub;
           // _listProduct = value.products;
 
-          for(final i in value.listSub)
+          for(final i in value.listSub) {
             _listSub.add(i);
-          for(final i in value.products)
-             {
-               _listProduct.add(i);
-             }
+
+          }
+          for(final i in _listSub){
+            if(i.name==dropdownValue)
+              categoryid=i.id;
+          }
+          bool hascategory=false;
+              for(final i in value.products)
+              {
+                _listProduct.add(i);
+
+                if(i.categoryId==categoryid)
+                 {
+                   _listProductShow.add(i);
+                   hascategory=true;
+                 }
+              }
+              if(hascategory==false)
+                _listProductShow=_listProduct;
+            }
 
 
-        }
+
       });
     });
 
@@ -54,7 +72,8 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
-    String dropdownValue = "Select Category";
+
+
     //   check = false;
     //   _showCheckout();
     return Stack(
@@ -98,6 +117,24 @@ class _MenuState extends State<Menu> {
                   onChanged: (String newValue) {
                     setState(() {
                       dropdownValue = newValue;
+                      for(final i in _listSub){
+                        if(i.name==dropdownValue)
+                          categoryid=i.id;
+                      }
+                      _listProductShow=[];
+                      for(final i in _listProduct)
+                      {
+
+                        if(i.categoryId==categoryid)
+                        {
+                          _listProductShow.add(i);
+                        }
+                      }
+                      if(dropdownValue=="Select Category" || dropdownValue=="All")
+                        {
+                          _listProductShow=_listProduct;
+                        }
+
                     });
                   },
                   items: _listSub.map((e){return  e.name;}).toList()
@@ -113,7 +150,9 @@ class _MenuState extends State<Menu> {
                             fontFamily: "main"),
                       ),
                     );
+
                   }).toList(),
+
                 ),
               ),
             ),
@@ -124,7 +163,7 @@ class _MenuState extends State<Menu> {
                 scrollDirection: Axis.vertical,
                 childAspectRatio: 1,
                 children: //_listProduct.length > 0 ?
-                    _listProduct.map((e){
+                    _listProductShow.map((e){
                       return _productMenu(e);
                     }).toList()
                     /*: Faker.listP.map((e) {
@@ -234,11 +273,12 @@ class _MenuState extends State<Menu> {
                     style: TextStyle(color: ColorApp.primary, fontSize: 15),
                   ),
                   Expanded(child: SizedBox()),
-                  if (product.available == 0)
+                  if (product.count == 0)
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          product.available = 1;
+                          print("one");
+                          product.count = 1;
                         });
 
                         if (!Constant.orders.contains(product)) {
@@ -266,7 +306,7 @@ class _MenuState extends State<Menu> {
                         ),
                       ),
                     ),
-                  if (product.available > 0)
+                  if (product.count > 0)
                     GestureDetector(
                       child: Icon(
                         Icons.remove_circle_outline,
@@ -275,20 +315,20 @@ class _MenuState extends State<Menu> {
                       ),
                       onTap: () {
                         setState(() {
-                          product.available--;
+                          product.count--;
                         });
                       },
                     ),
-                  if (product.available > 0)
+                  if (product.count > 0)
                     SizedBox(
                       width: 2,
                     ),
-                  if (product.available > 0) Text(product.available.toString()),
-                  if (product.available > 0)
+                  if (product.count > 0) Text(product.count.toString()),
+                  if (product.count > 0)
                     SizedBox(
                       width: 2,
                     ),
-                  if (product.available > 0)
+                  if (product.count > 0)
                     GestureDetector(
                       child: Icon(
                         Icons.add_circle_outline,
@@ -297,7 +337,9 @@ class _MenuState extends State<Menu> {
                       ),
                       onTap: () {
                         setState(() {
-                          product.available++;
+                          if(product.count+1<=product.available)
+                            product.count++;
+
                         });
                       },
                     ),
@@ -311,8 +353,8 @@ class _MenuState extends State<Menu> {
   }
 
   void _check(ProductModel p){
-    if(p.available!=null)
-    if(p.available > 0){
+    if(p.count!=null)
+    if(p.count > 0){
       check = true;
     }
     

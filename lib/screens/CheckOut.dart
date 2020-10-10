@@ -23,9 +23,18 @@ class _CheckOutState extends State<CheckOut> {
   bool enable = false;
   bool enable2 = false;
 
+  double totalprice=0;
+  double finalprice=0;
   int _currentIndex = 0;
   Widget Choosed;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  TextEditingController nameController = new TextEditingController();
+  TextEditingController phonenumberController = new TextEditingController();
+  TextEditingController prefixphoneController=new TextEditingController();
+  TextEditingController emailController=new TextEditingController();
+  TextEditingController companyController=new TextEditingController();
+  TextEditingController descriptionController=new TextEditingController();
   List<Item> items;
 
   @override
@@ -111,6 +120,12 @@ class _CheckOutState extends State<CheckOut> {
       ];
     }
 
+    totalprice=0;
+    finalprice=0;
+    for(final i in Constant.orders) {
+      totalprice = totalprice + i.price*i.count;
+      finalprice=finalprice+(i.price-i.price*i.discount/100)*i.count;
+    }
     switch (_currentIndex) {
       case 0:
         Choosed = _oneWidget();
@@ -133,6 +148,7 @@ class _CheckOutState extends State<CheckOut> {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         leading: IconButton(
             icon: Icon(
@@ -285,9 +301,22 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                 );
               } else {
+                if(one)
+                  {
+                    print("twooo");
+                    if((phonenumberController.text!="" && prefixphoneController.text!="")
+                  && nameController.text!="")
+                    setState(() {
+                      _currentIndex++;
+                    });
+                  else  _scaffoldKey.currentState.showSnackBar(Constant.snak("Enter the required values"));
+
+                  }
+                else
                 setState(() {
+
                   _currentIndex++;
-                  print("clicked");
+
                 });
               }
             },
@@ -337,7 +366,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "\$250",
+                    "\$${(totalprice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -381,7 +410,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "\$5",
+                    "\$${(totalprice-finalprice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -409,7 +438,7 @@ class _CheckOutState extends State<CheckOut> {
                   ),
                   Expanded(child: SizedBox()),
                   Text(
-                    "\$255",
+                  "\$${(finalprice).toStringAsFixed(2)}",
                     style: TextStyle(
                       color: Colors.red,
                       fontFamily: "main",
@@ -518,7 +547,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$250",
+                "\$${totalprice.toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -562,7 +591,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$5",
+                "\$${(totalprice-finalprice).toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -590,7 +619,7 @@ class _CheckOutState extends State<CheckOut> {
               ),
               Expanded(child: SizedBox()),
               Text(
-                "\$255",
+                "\$${finalprice.toStringAsFixed(2)}",
                 style: TextStyle(
                   color: Colors.red,
                   fontFamily: "main",
@@ -620,6 +649,7 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           TextField(
+            controller: nameController,
             decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "Alex"),
@@ -639,6 +669,7 @@ class _CheckOutState extends State<CheckOut> {
               Expanded(
                 flex: 1,
                 child: TextField(
+                  controller: prefixphoneController,
                   decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       hintText: "0971"),
@@ -650,6 +681,7 @@ class _CheckOutState extends State<CheckOut> {
               Expanded(
                 flex: 4,
                 child: TextField(
+                  controller: phonenumberController,
                   decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       hintText: "1234567"),
@@ -668,6 +700,7 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           TextField(
+            controller: emailController,
             decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "name@mail.com"),
@@ -683,6 +716,7 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           TextField(
+            controller: companyController,
             decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "company name"),
@@ -698,6 +732,7 @@ class _CheckOutState extends State<CheckOut> {
             ),
           ),
           TextField(
+            controller: descriptionController,
             decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
                 hintText: "insert your's description"),

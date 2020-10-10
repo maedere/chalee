@@ -31,11 +31,9 @@ class _CartItemState extends State<CartItem> {
         height: 300.h,
         child: Row(
           children: [
-            Image(
-              image: AssetImage(widget.model.image),
-              width: 80,
-              height: 80,
-            ),
+
+            Image.network(widget.model.image,height: 80,width: 80,),
+
             SizedBox(
               width: 5,
             ),
@@ -44,7 +42,7 @@ class _CartItemState extends State<CartItem> {
                 SizedBox(
                   height: 10,
                 ),
-                Text("test item 1"),
+                Text(widget.model.name),
                 SizedBox(
                   height: 5,
                 ),
@@ -59,7 +57,7 @@ class _CartItemState extends State<CartItem> {
                   child: SizedBox(),
                 ),
                 Text(
-                  "\$10  ",
+                  (widget.model.price-widget.model.discount*widget.model.price/100).toStringAsFixed(2),
                   style: TextStyle(color: Colors.red, fontSize: 15),
                 ),
                 SizedBox(

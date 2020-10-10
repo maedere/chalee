@@ -11,6 +11,7 @@ import 'package:chalee/screens/VerificationActivity.dart';
 import 'package:chalee/util/Constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 String url = "https://newreza.ir/chale/php/customer/";
 
@@ -22,7 +23,6 @@ Future<String> login(UserRegister userRegister,
   print(userRegister.username);
   print(userRegister.password);
 
-
   var response = http.post(
     url + "login.php",
     body: userRegisterToJson(userRegister),
@@ -32,7 +32,9 @@ Future<String> login(UserRegister userRegister,
     if (jsonDecode(value.body)["result"] == "ok") {
       str="ok";
       driver = userFromJson(value.body);
+
       Constant.user = driver;
+
       Navigator.pushReplacement(globalKey.currentContext,
         MaterialPageRoute(builder: (context) => SelectionActivity(),),);
     } else if (jsonDecode(value.body)["result"] == "no_user") {
@@ -49,6 +51,7 @@ Future<String> login(UserRegister userRegister,
   }).catchError((error) {
     globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
   });
+  
   return str;
 }
 void printWrapped(String text) {
@@ -161,7 +164,7 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
         subCategories.add(new SubCategories(i["id"],i["name"]));
       
     for(final i in result["goods"])
-      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"])));
+      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"]),0));
     //print(result["goods"]);
    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   }

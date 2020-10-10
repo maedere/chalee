@@ -35,7 +35,9 @@ class ProductModel {
       this.price,
       this.discount,
       this.description,
-      this.shopId);
+      this.shopId,
+      this.count
+      );
 
   ProductModel.send({
     this.username,
