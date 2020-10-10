@@ -22,7 +22,7 @@ Future<String> login(UserRegister userRegister,
   String str;
   print(userRegister.username);
   print(userRegister.password);
-
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
   var response = http.post(
     url + "login.php",
     body: userRegisterToJson(userRegister),
@@ -32,7 +32,11 @@ Future<String> login(UserRegister userRegister,
     if (jsonDecode(value.body)["result"] == "ok") {
       str="ok";
       driver = userFromJson(value.body);
-
+      prefs.setString("firstname",driver.firstName.toString());
+      prefs.setString("lastName", driver.lastName.toString());
+      prefs.setString("email", driver.mail.toString());
+      print(driver.lastName.toString());
+      print(driver.firstName.toString());
       Constant.user = driver;
 
       Navigator.pushReplacement(globalKey.currentContext,
@@ -51,9 +55,7 @@ Future<String> login(UserRegister userRegister,
   }).catchError((error) {
     globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
   });
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString("username",userRegister.username);
-  prefs.setString("password", userRegister.password);//maed
+
   return str;
 }
 void printWrapped(String text) {

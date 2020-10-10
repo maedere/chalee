@@ -265,6 +265,85 @@ class _DetailState extends State<Detail> {
                                         ],
                                       ),
                                     ),
+                                  if(show)
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
+                                            ),
+                                          ),
+                                          Expanded(child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "  saturday , june 12th 2020 , 03:46 - naser",
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontFamily: "main",
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                "i hated",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontFamily: "main",
+                                                ),
+                                              ),
+                                            ],
+                                          ),)
+                                        ],
+                                      ),
+                                    ),
+                                  if(show)
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 50,
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
+                                            ),
+                                          ),
+                                          Expanded(child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                "  saturday , june 12th 2020 , 03:46 - naser",
+                                                style: TextStyle(
+                                                  color: Colors.grey,
+                                                  fontFamily: "main",
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                "i 55",
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontFamily: "main",
+                                                ),
+                                              ),
+
+                                            ],
+                                          ),)
+                                        ],
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),

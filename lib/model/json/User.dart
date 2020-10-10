@@ -74,6 +74,7 @@ class User {
   String wallet;
   List<Address> addresses;
 
+
   factory User.fromJson(Map<String, dynamic> json) => User(
     result: json["result"],
     username: json["username"],

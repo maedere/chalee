@@ -4,12 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+String firstname;
+String lastname;
+String email;
 class Profile extends StatelessWidget {
   //todo add edit
   @override
   Widget build(BuildContext context) {
-
+  SharedPreferences sahredprfrenc;
+  SharedPreferences.getInstance().then((prefs) {
+    sahredprfrenc=prefs;
+    firstname =(sahredprfrenc.getString("firstname"));
+    lastname =(sahredprfrenc.getString("lastName"));
+    email =(sahredprfrenc.getString("email"));
+  });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -96,7 +104,7 @@ class Profile extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'saeed',
+                      firstname,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
@@ -127,7 +135,7 @@ class Profile extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'saeed',
+                      lastname,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
@@ -158,7 +166,7 @@ class Profile extends StatelessWidget {
                   ),
                   Expanded(
                     child: Text(
-                      'saeed',
+                      email,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
