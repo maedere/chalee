@@ -12,6 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'MainActivity.dart';
+
 class CheckOut extends StatefulWidget {
   @override
   _CheckOutState createState() => _CheckOutState();
@@ -315,7 +317,7 @@ class _CheckOutState extends State<CheckOut> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SearchActivity(
+                      builder: (context) => MainActivity(
                         mainCatagory: MainCatagory(id: 0, title: "Restaurant", url: "assets/images/resturant.png"),
                       ),
                     ),

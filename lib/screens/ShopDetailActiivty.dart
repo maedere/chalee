@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 class ShopDetailActivity extends StatefulWidget {
 
   final Shop shop;
-
+  int currentindex=0;
   ShopDetailActivity({@required this.shop});
 
   @override
@@ -95,15 +95,24 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
                                   Material(
                                     child: DefaultTabController(
                                         length: 3,
+                                        initialIndex: 0,
                                         child: Container(
                                           child: TabBar(
+                                            onTap: (index){
+                                              setState(() {
+                                                widget.currentindex=index;
+                                              });
+
+
+                                            },
                                             //todo is correct
                                             indicatorColor: ColorApp.primary,
                                             labelColor: Colors.black,
                                             tabs: [
                                               Tab(
-                                                text: "Menu",
-                                              ),
+                                                  text: "Menu",
+                                                ),
+
                                               Tab(
                                                 text: "Reviews",
                                               ),
@@ -112,7 +121,9 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
                                               ),
                                             ],
                                           ),
-                                        ),),
+
+                                        ),
+                                    ),
                                   )
 
                                 ],
@@ -125,13 +136,7 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
                   ),
                 ),
                 Expanded(
-                  child: TabBarView(
-                    children: [
-                     Menu(shopId: widget.shop.shopId,),
-                      Reviews(),
-                      About(shop: widget.shop,),
-                    ],
-                  ),
+                  child: tabbaritems(widget.currentindex),
                 ),
               ],
             ),
@@ -139,5 +144,31 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
         ),
       ),
     );
+  }
+  Widget tabbaritems(int index){
+    if(index==0)
+      return TabBarView(
+        children: [
+          Menu(shopId: widget.shop.shopId,),
+          Reviews( widget.shop.shopId,),
+          About(shop: widget.shop,),
+        ],
+      );
+    if(index==1)
+      return TabBarView(
+        children: [
+          Reviews( widget.shop.shopId,),
+          Menu(shopId: widget.shop.shopId,),
+          About(shop: widget.shop,),
+        ],
+      );
+    if(index==2)
+      return TabBarView(
+        children: [
+          About(shop: widget.shop,),
+          Menu(shopId: widget.shop.shopId,),
+          Reviews( widget.shop.shopId,),
+        ],
+      );
   }
 }

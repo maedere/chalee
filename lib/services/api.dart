@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:chalee/model/json/GetOrder.dart';
 import 'package:chalee/model/json/Location.dart';
 import 'package:chalee/model/json/ProductModel.dart';
+import 'package:chalee/model/json/ShopComment.dart';
 import 'package:chalee/model/json/ShopModel.dart';
 import 'package:chalee/model/json/User.dart';
 import 'package:chalee/model/local/DetailProduct.dart';
@@ -281,9 +282,130 @@ Future<Map> addOrder(String username,String password,String shop_id,
       "result":result["result"],
       "time":result["time"],
     };
-
-
-
-
   return returnvalue;
+}
+
+Future <void> getGoodComment(String good_id,String rangeId,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  print(good_id+"--");
+  var _body = <String, dynamic> {
+    "good_id": good_id,
+    "range_id": rangeId
+
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+
+  var response = await http.post(
+    url + "get_good_comments.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+  });
+
+
+  var result = jsonDecode(response.body);
+  printWrapped(result);
+ /* if(result["result"] == "ok"){
+    //subCategories=subCategoriesListFromJson(result["subcategories"]);
+    for(final i in result["orders"])
+    {
+      List<Goods> goods=[];
+      for(final j in i["goods"])
+        goods.add(new Goods(j["id"],j["name"],j["image_url"],j["price"],j["discount"],j["count"]));
+      orders.add(new Orders(i["id"],i["shop_id"],i["shop_name"],i["shop_image_url"],i["shop_accept_time"],i["total_payment"],i["time"],i["status"],goods));
+    }
+  }*/
+  //print(result["goods"]);
+  // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
+
+
+}
+
+
+Future<void> postGoodComment(String username,String password,String good_id,
+    String comment, GlobalKey<ScaffoldState> globalKey) async {
+
+
+  var _body = <String, dynamic> {
+    "username": username,
+    "password": password,
+    "good_id": good_id,
+    "comment" : comment,
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "post_good_comment.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+
+
+}
+
+Future<List<ShopComment>> getShopComment(String shop_id,String range_id, GlobalKey<ScaffoldState> globalKey) async {
+
+  List<ShopComment> shopComments=[];
+  var _body = <String, dynamic> {
+    "shop_id": shop_id,
+    "range_id": range_id,
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "get_shop_comments.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+  if(result["result"]=="ok")
+    {
+      for(final i in result["comments"])
+        shopComments.add(new ShopComment(i["id"], i["shop_id"], i["commenter_id"],
+            i["commenter_name"], i["comment"], i["time"]));
+    }
+
+  return shopComments;
+
+}
+
+Future<String> postShopComment(String username,String password,String shop_id,String comment, GlobalKey<ScaffoldState> globalKey) async {
+
+  List<ShopComment> shopComments=[];
+  var _body = <String, dynamic> {
+    "username": username,
+    "password": password,
+    "shop_id": shop_id,
+    "comment": comment
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  print("shop comment");
+  var response = await http.post(
+    url + "post_shop_comment.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+
+
+  return result["result"];
+
 }

@@ -76,7 +76,6 @@ class ListCatagories extends StatelessWidget {
             ),
             GestureDetector(
               onTap: (){
-                print("here");
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MainActivity(mainCatagory: main,)),

@@ -1,7 +1,9 @@
 library smiley_rating_dialog;
 
 import 'package:chalee/elements/rate/smiley_painter.dart';
+import 'package:chalee/services/api.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SmileyRatingDialog extends StatefulWidget {
 
@@ -29,19 +31,33 @@ class SmileyRatingDialog extends StatefulWidget {
   // Title of Dialog
   final Widget title;
 
+  final String shopId;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
+  TextEditingController controller=new TextEditingController();
+
   // Whether the corners of the buttons should be rounded or not
   final bool isRoundedButtons;
+
+  String _text="";
+
+  String getText(){
+    return _text;
+  }
+  String get text => _text;
 
   SmileyRatingDialog(
       {this.starColor = Colors.yellow,
       this.title,
+        this.shopId,
       @required this.onSubmitPressed,
       @required this.onCancelPressed,
       @required this.positiveButtonText,
       @required this.negativeButtonText,
       this.isRoundedButtons = true,
       this.positiveButtonColor = Colors.amber,
-      this.negativeButtonColor = Colors.amber});
+      this.negativeButtonColor = Colors.amber,
+        });
 
   @override
   _SmileyRatingDialogState createState() => _SmileyRatingDialogState();
@@ -75,6 +91,7 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: widget.title,
       titleTextStyle: TextStyle(color: Colors.grey[500] , fontFamily: "main"),
@@ -100,6 +117,7 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
           SizedBox(height: 10,),
           //edit by saeed hosseni
       TextField(
+        controller: widget.controller,
         decoration: InputDecoration(
             border: OutlineInputBorder(),
             hintText: "insert your comment"
@@ -115,6 +133,15 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
                         widget.isRoundedButtons ? 4.0 : 0.0)),
                 color: widget.positiveButtonColor,
                 onPressed: () {
+                  SharedPreferences sharedPrefs;
+                  SharedPreferences.getInstance().then((prefs) {
+                    sharedPrefs = prefs;
+                    postShopComment(sharedPrefs.getString("username"), sharedPrefs.getString("password"),
+                  widget.shopId, widget.controller.text, widget._key);
+                    print(widget.controller.text+"--");
+
+                  });
+
                   widget.onSubmitPressed(_rating);
                 },
                 child: Text(widget.positiveButtonText),
@@ -125,6 +152,7 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
                         widget.isRoundedButtons ? 4.0 : 0.0)),
                 color: widget.negativeButtonColor,
                 onPressed: () {
+
                   widget.onCancelPressed();
                 },
                 child: Text(widget.negativeButtonText),
@@ -133,6 +161,7 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
           )
         ],
       ),
+
     );
   }
 }
