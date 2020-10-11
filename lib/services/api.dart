@@ -177,9 +177,13 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
     //print(result["goods"]);
    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   }
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setString("address1",result["address"]);
+  prefs.setString("lat", result["lat"]);
+  prefs.setString("lng", result["lng"]);
+
   model=DetailProductModel(listSub: subCategories,products: productModels);
-
-
   return model;
 }
 
@@ -239,6 +243,7 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 }
 
+<<<<<<< HEAD
 
 Future editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
@@ -271,14 +276,20 @@ Future editPass(String username,String password,String newpass,String firstname,
 
 }
 /*
+=======
+>>>>>>> e07d8104591f89cbe2966013f5abd7a3c3a5a0ed
 
-Future<DetailProductModel> addOrder(String username,String password,String shop_id,
+Future<Map> addOrder(String username,String password,String shop_id,
     String name,String phone,String mail,
     String company,String address,String lat,String lng,String vehicle_code,
     String description,String payment_method,List<SimpleGood> simplegoods,
     GlobalKey<ScaffoldState> globalKey) async {
 
-  Map<String , dynamic> map = {
+  var goods = <Map<String, String>>[];
+  for(final i in simplegoods)
+    goods.add({"id":i.id,"name":i.name});
+
+  var _body = <String, dynamic> {
     "username": username,
     "password": password,
     "shop_id": shop_id,
@@ -290,16 +301,16 @@ Future<DetailProductModel> addOrder(String username,String password,String shop_
     "lat": lat,
     "lng": lng,
     "vehicle_code": vehicle_code,
-    "lat": lat,
-    "lat": lat,
+    "description": description,
+    "payment_method": payment_method,
+    "goods": goods ,
+
   };
-  DetailProductModel model ;
-  List<SubCategories> subCategories=[];
-  List<ProductModel> productModels=[];
+  var bytes = utf8.encode(json.encode(_body));
 
   var response = await http.post(
-    url + "get_goods.php",
-    body: shopProductRequestToJson(request),
+    url + "add_order.php",
+    body: bytes,
   ).catchError((error) {
     print(error.toString());
     return error;
@@ -308,19 +319,13 @@ Future<DetailProductModel> addOrder(String username,String password,String shop_
   var result = jsonDecode(response.body);
   printWrapped(response.body);
 
-  if(result["result"] == "ok"){
-    //subCategories=subCategoriesListFromJson(result["subcategories"]);
-    for(final i in result["subcategories"])
-      subCategories.add(new SubCategories(i["id"],i["name"]));
-
-    for(final i in result["goods"])
-      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"]),0));
-    //print(result["goods"]);
-    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
-  }
-  model=DetailProductModel(listSub: subCategories,products: productModels);
+    Map<String , dynamic> returnvalue = {
+      "result":result["result"],
+      "time":result["time"],
+    };
 
 
-  return model;
+
+
+  return returnvalue;
 }
-*/
