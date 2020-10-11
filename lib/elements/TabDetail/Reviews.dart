@@ -1,14 +1,32 @@
 import 'package:chalee/elements/rate/smiley_rating_dialog.dart';
+import 'package:chalee/model/json/ShopComment.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Reviews extends StatefulWidget {
+  final String shopId;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  Reviews(@required this.shopId);
+  List<ShopComment> shopComments=[];
+
   @override
   _ReviewsState createState() => _ReviewsState();
 }
 
 class _ReviewsState extends State<Reviews> {
+
+@override
+  void initState() {
+    getShopComment(widget.shopId, "0", widget._key).then((value){
+      setState(() {
+        widget.shopComments=value;
+
+      });
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +42,7 @@ class _ReviewsState extends State<Reviews> {
               Align(
                 alignment: AlignmentDirectional.topEnd,
                 child: Text(
-                  "1 Review   ",
+                  "${widget.shopComments.length} Review   ",
                   style: TextStyle(
                     color: Colors.black,
                     fontFamily: "main",
@@ -35,6 +53,7 @@ class _ReviewsState extends State<Reviews> {
                 height: 10,
               ),
               //one model
+/*
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 50,
@@ -73,44 +92,10 @@ class _ReviewsState extends State<Reviews> {
                   ],
                 ),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: 50,
-                child: Row(
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
-                      ),
-                    ),
-                    Expanded(child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "  saturday , june 12th 2020 , 03:46 - naser",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontFamily: "main",
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "i hated",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "main",
-                          ),
-                        ),
-                      ],
-                    ),)
-                  ],
-                ),
-              ),
+*/
+              Column(
+                children: comments(),
+              )
             ],
           ),
           Align(
@@ -120,7 +105,6 @@ class _ReviewsState extends State<Reviews> {
               child: RaisedButton(
                 padding: EdgeInsets.symmetric(horizontal: 20),
                 onPressed: () {
-                  print("clciked");
                   showDialog(
                       barrierDismissible: true,
                       context: context,
@@ -131,13 +115,16 @@ class _ReviewsState extends State<Reviews> {
                             textAlign: TextAlign.center,
                           ),
                           starColor: Colors.yellowAccent,
+                          shopId: widget.shopId,
                           isRoundedButtons: true,
                           positiveButtonText: 'Ok',
                           negativeButtonText: 'Cancel',
                           positiveButtonColor: ColorApp.primary,
                           negativeButtonColor: ColorApp.primary,
-                          onCancelPressed: () => Navigator.pop(context),
-                          onSubmitPressed: (rating) {Navigator.pop(context);},
+                          onCancelPressed: () {
+                            Navigator.pop(context);},
+                          onSubmitPressed: (rating) {
+                            Navigator.pop(context);},
                         );
                       });
                 },
@@ -158,5 +145,54 @@ class _ReviewsState extends State<Reviews> {
         ],
       ),
     );
+  }
+
+  List<Widget> comments() {
+    List<Widget> list = List();
+    //i<5, pass your dynamic limit as per your requirment
+    for (final i in widget.shopComments) {
+
+      list.add(
+        Container(
+        width: MediaQuery.of(context).size.width,
+        height: 50,
+        child: Row(
+          children: [
+            Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
+              ),
+            ),
+            Expanded(child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "  ${i.time} - ${i.commenterName}",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontFamily: "main",
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(
+                  i.comment,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: "main",
+                  ),
+                ),
+              ],
+            ),)
+          ],
+        ),
+      ),
+      );//add any Widget in place of Text("Index $i")
+    }
+    return list;// all widget added now retrun the list here
   }
 }

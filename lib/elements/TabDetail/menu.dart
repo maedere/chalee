@@ -233,6 +233,7 @@ class _MenuState extends State<Menu> {
               finalPrice: (product.price-product.discount*product.price/100).toStringAsFixed(2),
               calory: product.calory,
               spicy : product.spicy,
+              id : product.id,
             ),
           ),
         );
@@ -278,7 +279,6 @@ class _MenuState extends State<Menu> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          print("one");
                           product.count = 1;
                         });
 

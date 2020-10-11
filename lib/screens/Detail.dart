@@ -1,4 +1,5 @@
 import 'package:chalee/elements/rate/smiley_rating_dialog.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,8 +12,10 @@ class Detail extends StatefulWidget {
   final String finalPrice;
   final String calory;
   final String spicy;
+  final String id;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-  Detail({@required this.image, @required this.heroTag, this.description, this.finalPrice, this.calory,this.spicy});
+  Detail({@required this.image, @required this.heroTag, this.description, this.finalPrice, this.calory,this.spicy,this.id});
 
   @override
   _DetailState createState() => _DetailState();
@@ -137,6 +140,7 @@ class _DetailState extends State<Detail> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
+                              getGoodComment(widget.id, "0", widget._key);
                               if(_alignmentDirectional == AlignmentDirectional.topCenter)
                               _alignmentDirectional = AlignmentDirectional.bottomCenter;
                               else
