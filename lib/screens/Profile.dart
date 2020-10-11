@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'EditPassword.dart';
 String firstname;
 String lastname;
 String email;
@@ -112,6 +114,7 @@ class Profile extends StatelessWidget {
                       ),
                     ),
                   ),
+
                 ],
               ),
               SizedBox(
@@ -158,7 +161,7 @@ class Profile extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    'Email         ',
+                    'Email',
                     style: TextStyle(fontFamily: "main"),
                   ),
                   SizedBox(
@@ -182,6 +185,43 @@ class Profile extends StatelessWidget {
               Divider(),
               SizedBox(
                 height: 10,
+              ),
+              Expanded (
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: Color.fromARGB(70, 25, 25, 25),
+                        borderRadius: BorderRadius.all(Radius.circular(5))
+                    ),
+                    width: MediaQuery.of(context).size.width-40,
+                    height: MediaQuery.of(context).size.height/24,
+                    child: InkWell(
+                      onTap: ()
+                      {
+                        Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context)=>EditPassword()
+                            ));
+                      },
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text
+                          (
+                          "Edit Password",
+                          style: TextStyle
+                            (
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 18,
+                            fontFamily: "main",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height/80,
               ),
             ],
           ),
