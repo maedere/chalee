@@ -159,7 +159,7 @@ class _MenuState extends State<Menu> {
             ),
             Expanded(
               child: GridView.count(
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(8),
                 crossAxisCount: 2,
                 scrollDirection: Axis.vertical,
                 childAspectRatio: 1,
@@ -167,10 +167,7 @@ class _MenuState extends State<Menu> {
                     _listProductShow.map((e){
                       return _productMenu(e);
                     }).toList()
-                    /*: Faker.listP.map((e) {
-                      print("fake");
-                  return _productMenu(e);
-                }).toList()*/
+
               ),
             ),
           ],

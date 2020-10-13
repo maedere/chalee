@@ -1,4 +1,5 @@
 import 'package:chalee/screens/ChooseLcoation.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,8 @@ String firstname;
 String lastname;
 String email;
 class Profile extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
   //todo add edit
   @override
   Widget build(BuildContext context) {
@@ -200,6 +203,7 @@ class Profile extends StatelessWidget {
                       onTap: ()
                       {
                         Navigator.of(context).push(MaterialPageRoute(
+
                                 builder: (context)=>EditPassword()
                             ));
                       },

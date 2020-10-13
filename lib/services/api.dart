@@ -20,11 +20,11 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 String url = "https://newreza.ir/chale/php/customer/";
+User driver;
 
 //login //ok
 Future<String> login(UserRegister userRegister,
     GlobalKey<ScaffoldState> globalKey) async {
-  User driver;
   String str;
   print(userRegister.username);
   print(userRegister.password);
@@ -43,9 +43,6 @@ Future<String> login(UserRegister userRegister,
       prefs.setString("email", driver.mail.toString());
       prefs.setString("password", driver.password.toString());
       prefs.setString("username", driver.username.toString());
-      prefs.setString("newpass", "");
-      print(driver.lastName.toString());
-      print(driver.firstName.toString());
       Constant.user = driver;
 
       Navigator.pushReplacement(globalKey.currentContext,
@@ -251,46 +248,37 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 Future editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
-  List <Orders> orders=[];
 
-  Map<String , dynamic> map = {
-    /*"username": username.toString(),
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
     "password": password.toString(),
     "new_password": newpass.toString(),
-    "first_name": firstname.toString(),
+    "first_name":firstname.toString(),
     "last_name": lastname.toString(),
-    "mail": mail.toString()*/
-    "username": "989135083446",
-    "password": "1254",
-    "new_password": "654321",
-    "first_name": "Reza",
-    "last_name": "Beman",
-    "mail": "rezabeman@gmail.com"
+    "mail":  mail.toString()
   };
+  var bytes = utf8.encode(json.encode(_body));
   var response = await http.post(
     url + "edit_profile.php",
-    body: map,
+    body: bytes,
   ).catchError((error) {
     print(error.toString()+"******************************");
-    return orders;
   });
 
 
   var result = jsonDecode(response.body);
   print(result["result"]+"jjjjjjjjjjjjj");
-  print(username);
-  print(password);
-  print(lastname);
-  print(mail);
-  print(newpass);
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  prefs.setString("password", newpass);
+  prefs.setString("firstname", firstname);
+  prefs.setString("last_name", lastname);
+  prefs.setString("mail", mail);
   print(firstname);
 
-  //print(result["goods"]);
-  // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
-  //return orders;
-
-
 }
+
 
 
 

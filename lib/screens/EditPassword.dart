@@ -1,4 +1,5 @@
 import 'package:chalee/model/json/EditPass.dart';
+import 'package:chalee/model/json/User.dart';
 import 'package:chalee/screens/Profile.dart';
 import 'package:chalee/util/Constant.dart';
 import 'package:chalee/value/ColorApp.dart';
@@ -15,7 +16,6 @@ String password;
 String username;
 String firstname;
 String lastName;
-String newpass1;
 String email;
 TextEditingController oldpass = new TextEditingController();
 TextEditingController repeatpass = new TextEditingController();
@@ -27,15 +27,9 @@ class EditPassword extends StatefulWidget {
 
 class _EditPasswordState extends State<EditPassword> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-
-/*  void initState() {
-     var future = editPass(username,password,newpass1,firstname,lastName,email, _key).then((value){
-      setState(() {
-
-
-      });
-    });    super.initState();
-  }*/
+  void showInSnackBar(String value) {
+    _key.currentState.showSnackBar(new SnackBar(content: new Text(value)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +40,9 @@ class _EditPasswordState extends State<EditPassword> {
       lastName =(sahredprfrenc.getString("lastName"));
       email =(sahredprfrenc.getString("email"));
       username =(sahredprfrenc.getString("username"));
-      newpass1 =(sahredprfrenc.getString("newpass"));
     });
     return Scaffold(
+      key : _key,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -142,22 +136,23 @@ class _EditPasswordState extends State<EditPassword> {
                     child: InkWell(
                       onTap: ()
                       {
-                        var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
-                        print(username+"username");
-                        print(password+"password");
-                        print(newpass.text+"newpass1");
-                        newpass1=newpass.text;
-                        print(firstname);
-                        print(lastName);
-                        print(email);
-
-                        if(newpass.text!=repeatpass.text)
+                        print(password);
+                        if(oldpass.text!=password)
                         {
-                          print("Your Repatitve Password is not same New password");
+                          showInSnackBar("Your Old Password Is Wrong!");
+                        }
+                        else if(newpass.text!=repeatpass.text)
+                        {
+
+                          showInSnackBar("Your Repatitve Password is not same New password");
                         }
                         else
                         {
+                          var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
+                          //changePass(UserRegister(username : username , password:newpass.text ,), _key);
                           Navigator.pop(context);
+                          showInSnackBar("Your Password Changed Successful");
+
                         }
                       },
                       child: Align(
