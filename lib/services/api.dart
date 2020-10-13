@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:chalee/model/json/EditPass.dart';
@@ -244,7 +245,7 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 }
 
-<<<<<<< HEAD
+
 
 Future editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
@@ -276,9 +277,8 @@ Future editPass(String username,String password,String newpass,String firstname,
 
 
 }
-/*
-=======
->>>>>>> e07d8104591f89cbe2966013f5abd7a3c3a5a0ed
+
+
 
 Future<Map> addOrder(String username,String password,String shop_id,
     String name,String phone,String mail,
