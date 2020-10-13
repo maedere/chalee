@@ -28,14 +28,14 @@ class EditPassword extends StatefulWidget {
 class _EditPasswordState extends State<EditPassword> {
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
-  void initState() {
-    var future = editPass(username,password,newpass1,firstname,lastName,email, _key).then((value){
+/*  void initState() {
+     var future = editPass(username,password,newpass1,firstname,lastName,email, _key).then((value){
       setState(() {
 
 
       });
     });    super.initState();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -142,16 +142,14 @@ class _EditPasswordState extends State<EditPassword> {
                     child: InkWell(
                       onTap: ()
                       {
-                        print(oldpass.text+"mm");
-                        print(newpass.text+"mm");
-                        print(repeatpass.text+"mm");
+                        var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
+                        print(username+"username");
+                        print(password+"password");
+                        print(newpass.text+"newpass1");
                         newpass1=newpass.text;
                         print(firstname);
                         print(lastName);
-                        print(password);
                         print(email);
-                        print(username);
-                        print(newpass1);
 
                         if(newpass.text!=repeatpass.text)
                         {

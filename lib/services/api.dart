@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 
 import 'package:chalee/model/json/EditPass.dart';
 import 'package:chalee/model/json/GetOrder.dart';
@@ -9,6 +11,7 @@ import 'package:chalee/model/json/ShopModel.dart';
 import 'package:chalee/model/json/User.dart';
 import 'package:chalee/model/local/DetailProduct.dart';
 import 'package:chalee/screens/EditPassword.dart';
+import 'package:chalee/screens/Profile.dart';
 import 'package:chalee/screens/SelectionActivity.dart';
 import 'package:chalee/screens/VerificationActivity.dart';
 import 'package:chalee/util/Constant.dart';
@@ -244,19 +247,25 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 }
 
-<<<<<<< HEAD
+
 
 Future editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
   List <Orders> orders=[];
 
   Map<String , dynamic> map = {
-    "username": username,
-    "password": password,
-    "new_password": newpass,
-    "first_name": firstname,
-    "last_name": lastname,
-    "mail": mail
+    /*"username": username.toString(),
+    "password": password.toString(),
+    "new_password": newpass.toString(),
+    "first_name": firstname.toString(),
+    "last_name": lastname.toString(),
+    "mail": mail.toString()*/
+    "username": "989135083446",
+    "password": "1254",
+    "new_password": "654321",
+    "first_name": "Reza",
+    "last_name": "Beman",
+    "mail": "rezabeman@gmail.com"
   };
   var response = await http.post(
     url + "edit_profile.php",
@@ -269,6 +278,12 @@ Future editPass(String username,String password,String newpass,String firstname,
 
   var result = jsonDecode(response.body);
   print(result["result"]+"jjjjjjjjjjjjj");
+  print(username);
+  print(password);
+  print(lastname);
+  print(mail);
+  print(newpass);
+  print(firstname);
 
   //print(result["goods"]);
   // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
@@ -276,9 +291,8 @@ Future editPass(String username,String password,String newpass,String firstname,
 
 
 }
-/*
-=======
->>>>>>> e07d8104591f89cbe2966013f5abd7a3c3a5a0ed
+
+
 
 Future<Map> addOrder(String username,String password,String shop_id,
     String name,String phone,String mail,
