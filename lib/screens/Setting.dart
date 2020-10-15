@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-String firstname1;
+String firstname1="";
 class Setting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class Setting extends StatelessWidget {
                 color: Colors.grey[300],
                 child: Center(
                   child: Text(
-                    "hi  "+firstname1,
+                    firstname1,
                     style: TextStyle(
                       color: ColorApp.primary,
                       fontFamily: "main",

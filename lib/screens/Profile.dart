@@ -1,5 +1,6 @@
 
 import 'package:chalee/elements/DialogTest.dart';
+import 'package:chalee/model/json/User.dart';
 import 'package:chalee/screens/ChooseLcoation.dart';
 import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
@@ -9,10 +10,12 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'EditPassword.dart';
-String firstname;
+String firstname="";
 String lastname;
 String email;
-<<<<<<< HEAD
+String username;
+String password;
+List<Address> addresses=[];
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -21,12 +24,10 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool edit=false;
 
-=======
-class Profile extends StatelessWidget {
+
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   //todo add edit
->>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
   @override
   Widget build(BuildContext context) {
     SharedPreferences sahredprfrenc;
@@ -35,6 +36,8 @@ class Profile extends StatelessWidget {
       firstname =(sahredprfrenc.getString("firstname"));
       lastname =(sahredprfrenc.getString("lastName"));
       email =(sahredprfrenc.getString("email"));
+      username=(sahredprfrenc.getString("username"));
+      password=(sahredprfrenc.getString("password"));
     });
     return Scaffold(
       appBar: AppBar(
@@ -86,15 +89,16 @@ class Profile extends StatelessWidget {
                       color: ColorApp.primary,
                     ),
                     onPressed: (){
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (_) => LogoutOverlay(),
-                      // );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ChooseLocation()),
-                      );
+                      getAddresses(username,password,_key).then((value){
+                        setState(() {
+                          addresses=value;
+                        });
+                      });
+                       showDialog(
+                         context: context,
+                         builder: (_) => LogoutOverlay(),
+                       );
+
                     },
                   ):SizedBox(),
                   SizedBox(
@@ -247,14 +251,10 @@ class Profile extends StatelessWidget {
                       onTap: ()
                       {
                         Navigator.of(context).push(MaterialPageRoute(
-<<<<<<< HEAD
+
                             builder: (context)=>EditPassword()
                         ));
-=======
 
-                                builder: (context)=>EditPassword()
-                            ));
->>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
                       },
                       child: Align(
                         alignment: Alignment.center,
@@ -296,6 +296,7 @@ class LogoutOverlayState extends State<LogoutOverlay>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> scaleAnimation;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -326,59 +327,31 @@ class LogoutOverlayState extends State<LogoutOverlay>
               height: 320.0,
 
               decoration: ShapeDecoration(
-                  color: Colors.grey,
+                  color: Colors.blue[100],
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0))),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            top: 30.0, left: 20.0, right: 20.0),
-                        child: Text(
-                          "choose your address",
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
-                        ),
-                      )),
-
-                  Expanded(
-                      child: Column(
-                        children: comments(),
-                      )
-                    /*Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: ButtonTheme(
-                                height: 35.0,
-                                minWidth: 110.0,
-                                child: RaisedButton(
-                                  color: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0)),
-                                  splashColor: Colors.white.withAlpha(40),
-                                  child: Text(
-                                    'Logout',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13.0),
-                                  ),
-                                  onPressed: () {
-                                    // setState(() {
-                                    //   Route route = MaterialPageRoute(
-                                    //       builder: (context) => LoginScreen());
-                                    //   Navigator.pushReplacement(context, route);
-                                    // });
-                                  },
-                                )),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, left: 20.0, right: 20.0),
+                          child: Text(
+                            "choose your address",
+                            style: TextStyle(color: Colors.white, fontSize: 16.0),
                           ),
-                          Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20.0, right: 10.0, top: 10.0, bottom: 10.0),
-                              child:  ButtonTheme(
+                        )),
+
+                     Column(
+                          children: addresse(),
+                        )
+                      /*Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: ButtonTheme(
                                   height: 35.0,
                                   minWidth: 110.0,
                                   child: RaisedButton(
@@ -387,7 +360,7 @@ class LogoutOverlayState extends State<LogoutOverlay>
                                         borderRadius: BorderRadius.circular(5.0)),
                                     splashColor: Colors.white.withAlpha(40),
                                     child: Text(
-                                      'Cancel',
+                                      'Logout',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           color: Colors.green,
@@ -395,64 +368,128 @@ class LogoutOverlayState extends State<LogoutOverlay>
                                           fontSize: 13.0),
                                     ),
                                     onPressed: () {
-                                      setState(() {
-                                         Route route = MaterialPageRoute(
-                                          builder: (context) => LoginScreen());
-                                      Navigator.pushReplacement(context, route);
-                                    });
+                                      // setState(() {
+                                      //   Route route = MaterialPageRoute(
+                                      //       builder: (context) => LoginScreen());
+                                      //   Navigator.pushReplacement(context, route);
+                                      // });
                                     },
-                                  ))
-                          ),
-                        ],
-                      )*/),
-                ],
+                                  )),
+                            ),
+                            Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 10.0, top: 10.0, bottom: 10.0),
+                                child:  ButtonTheme(
+                                    height: 35.0,
+                                    minWidth: 110.0,
+                                    child: RaisedButton(
+                                      color: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(5.0)),
+                                      splashColor: Colors.white.withAlpha(40),
+                                      child: Text(
+                                        'Cancel',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13.0),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                           Route route = MaterialPageRoute(
+                                            builder: (context) => LoginScreen());
+                                        Navigator.pushReplacement(context, route);
+                                      });
+                                      },
+                                    ))
+                            ),
+                          ],
+                        )*/,
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: IconButton( icon: Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black,
+                      ),
+                      onPressed: (){
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChooseLocation()),
+                        );
+                      },),
+                    ),
+                  ],
+                ),
               )),
         ),
       ),
     );
   }
-  List<Widget> comments() {
+  List<Widget> addresse() {
     List<Widget> list = List();
     List<int> locations=[1,2,4];
     //i<5, pass your dynamic limit as per your requirment
-    for (final i in locations) {
+    for (final i in addresses) {
       list.add(
         Container(
           width: MediaQuery.of(context).size.width,
           height: 50,
-          child: Row(
-            children: [
-              IconButton( icon: Icon(
-                Icons.location_on_sharp,
-                color: Colors.black,
-              )),
-             SizedBox(width: 20,),
-              Expanded(child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontFamily: "main",
+          child:  SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Row(
+              children: [
+                IconButton( icon: Icon(
+                  Icons.location_on_sharp,
+                  color: Colors.black,
+                )),
+               SizedBox(width: 20,),
+                Expanded(child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: "main",
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 1,
-                  ),
-                  Text(
-                    "lolllll",
-                    style: TextStyle(
+                    SizedBox(
+                      height: 1,
+                    ),
+                    Text(
+                      i.address,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "main",
+                      ),
+                    ),
+                                    ],
+                ),),
+                IconButton( icon: Icon(
+                      Icons.check_box_outline_blank_sharp,
                       color: Colors.black,
-                      fontFamily: "main",
                     ),
-                  ),
-                  IconButton( icon: Icon(
-                    Icons.check_box_outline_blank_sharp,
-                    color: Colors.black,
-                  )),                ],
-              ),)
-            ],
+                onPressed: (){
+
+                },),
+                IconButton( icon: Icon(
+                      Icons.edit_location_outlined,
+                      color: Colors.black,
+                    ),
+                onPressed: (){
+
+                },),
+                IconButton( icon: Icon(
+                      Icons.delete_forever,
+                      color: Colors.black,
+                    ),
+                onPressed: (){
+                  deleteAddress(username,password,i.id,_key);
+                },),
+              ],
+            ),
           ),
         ),
       );//add any Widget in place of Text("Index $i")

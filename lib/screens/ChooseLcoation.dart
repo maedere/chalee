@@ -11,6 +11,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Profile.dart';
+
 class ChooseLocation extends StatefulWidget {
   @override
   _ChooseLocationState createState() => _ChooseLocationState();
@@ -224,13 +226,22 @@ class _ChooseLocationState extends State<ChooseLocation> {
         lat: centerLatLng.target.latitude,
         lng: centerLatLng.target.longitude,
         address: myController.text);
-    addAddress(address,_scaffoldKey);
+    String username;
+    String password;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("address", true);
     prefs.setString("addressData", jsonEncode(address));
+    username=prefs.getString("username");
+    password=prefs.getString("password");
+    addAddress(address,username,password,_scaffoldKey);
+
+
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => SelectionActivity()),
+      MaterialPageRoute(builder: (context) => Profile()),
     );
+    if (Navigator.canPop(context))
+      Navigator.pop(context);
   }
 }

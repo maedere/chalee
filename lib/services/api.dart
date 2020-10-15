@@ -29,15 +29,20 @@ Future<String> login(UserRegister userRegister,
   print(userRegister.username);
   print(userRegister.password);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  var response = http.post(
+  var response = await http.post(
     url + "login.php",
     body: userRegisterToJson(userRegister),
-  );
-  response.then((value) {
-    print(value.body);
-    if (jsonDecode(value.body)["result"] == "ok") {
+  ).catchError((error){
+    print(error.toString());
+    globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
+
+  });
+
+    print(response.body);
+    if (jsonDecode(response.body)["result"] == "ok") {
       str="ok";
-      driver = userFromJson(value.body);
+
+      driver = userFromJson(response.body);
       prefs.setString("firstname",driver.firstName.toString());
       prefs.setString("lastName", driver.lastName.toString());
       prefs.setString("email", driver.mail.toString());
@@ -47,7 +52,7 @@ Future<String> login(UserRegister userRegister,
 
       Navigator.pushReplacement(globalKey.currentContext,
         MaterialPageRoute(builder: (context) => SelectionActivity(),),);
-    } else if (jsonDecode(value.body)["result"] == "no_user") {
+    } else if (jsonDecode(response.body)["result"] == "no_user") {
       str="ok";
       globalKey.currentState.showSnackBar(
           Constant.snak("user Not found , please sign up"));
@@ -58,11 +63,8 @@ Future<String> login(UserRegister userRegister,
       Navigator.push(globalKey.currentContext, MaterialPageRoute(
         builder: (context) => VerificationActivity(mobile: userRegister.username,),),);
     }
-  }).catchError((error) {
-    globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
-  });
-
   return str;
+
 }
 void printWrapped(String text) {
   final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
@@ -189,17 +191,74 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
 }
 
 //add_address.php
-Future<void> addAddress(LocationModel request,
-    GlobalKey<ScaffoldState> globalKey) async {
-  print(request.address);
-  print(request.lat);
-  print(request.lng);
+Future<void> deleteAddress(String username,
+    String password,String addressId,GlobalKey<ScaffoldState> globalKey) async {
+
   var _body = <String, dynamic> {
-    "username": "989135083446",
-    "password": "654321",
-    "address": "1",
-    "lat": 35.71995692074798,
-    "lng": 51.40602104365826,
+    "username": username,
+    "password": password,
+    "address_id": addressId
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "delete_address.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    globalKey.currentState.showSnackBar(
+        Constant.snak(error.toString()));
+    return error;
+  });
+  var result = jsonDecode(response.body);
+
+  print(result);
+    if(result["result"] == "ok"){
+      //todo replacement 2 way: home , profile
+    }else  globalKey.currentState.showSnackBar(
+        Constant.snak("user Not found "));
+
+}
+Future<void> editAddress(LocationModel request,String username,
+    String password,String addressId,GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username,
+    "password": password,
+    "address_id": addressId,
+    "address": request.address,
+    "lat": request.lat,
+    "lng": request.lng
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "edit_address.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    globalKey.currentState.showSnackBar(
+        Constant.snak(error.toString()));
+    return error;
+  });
+  var result = jsonDecode(response.body);
+
+  print(result);
+  if(result["result"] == "ok"){
+    //todo replacement 2 way: home , profile
+  }else  globalKey.currentState.showSnackBar(
+      Constant.snak("user Not found "));
+
+}
+Future<void> addAddress(LocationModel request,String username,
+    String password,GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username,
+    "password": password,
+    "address": request.address,
+    "lat": request.lat,
+    "lng": request.lng,
   };
   var bytes = utf8.encode(json.encode(_body));
 
@@ -208,18 +267,51 @@ Future<void> addAddress(LocationModel request,
     body: bytes,
   ).catchError((error) {
     print(error.toString());
+    globalKey.currentState.showSnackBar(
+        Constant.snak(error.toString()));
     return error;
   });
   var result = jsonDecode(response.body);
 
   print(result);
-    if(result["result"] == "ok"){
-      //todo replacement 2 way: home , profile
-    }
+  if(result["result"] == "ok"){
+    //todo replacement 2 way: home , profile
+  }else  globalKey.currentState.showSnackBar(
+      Constant.snak("user Not found "));
 
 
 }
 
+Future<List<Address>> getAddresses(String userName, String password,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  List<Address> addresses=[];
+  var _body = <String, dynamic> {
+      "username": userName,
+      "password": password
+
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "get_addresses.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    return error;
+  });
+
+  var result = jsonDecode(response.body);
+  printWrapped(response.body);
+  if(result["result"]=="ok")
+  {
+    for(final i in result["addresses"])
+      addresses.add(new Address(i["id"],i["address"],i["lat"],i["lng"]));
+  }
+
+  return addresses;
+
+}
 
 
 Future<List<Orders>> getOrder(String username,String password,String rangeId,
@@ -263,26 +355,7 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
 
-<<<<<<< HEAD
-  Map<String , dynamic> map = {
-    "username": "989135083446",
-    "password": "654321",
-    "new_password": "654321",
-    "first_name": "Reza",
-    "last_name": "Beman",
-    "mail": "rezabeman@gmail.com"
-  };
-  var _body = <String, dynamic> {
-    "username": "989135083446",
-    "password": "654321",
-    "new_password": "654321",
-    "first_name": "Reza",
-    "last_name": "Beman",
-    "mail": "rezabeman@gmail.com"
-  };
-  var bytes = utf8.encode(json.encode(_body));
 
-=======
 
   var _body = <String, dynamic> {
     "username": username.toString(),
@@ -293,7 +366,6 @@ Future<void> editPass(String username,String password,String newpass,String firs
     "mail":  mail.toString()
   };
   var bytes = utf8.encode(json.encode(_body));
->>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
   var response = await http.post(
     url + "edit_profile.php",
     body: bytes,
@@ -303,7 +375,6 @@ Future<void> editPass(String username,String password,String newpass,String firs
 
 
   var result = jsonDecode(response.body);
-<<<<<<< HEAD
   print(result);
   /*print(username);
   print(password);
@@ -316,7 +387,6 @@ Future<void> editPass(String username,String password,String newpass,String firs
   // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   //return orders;
  return;
-=======
   print(result["result"]+"jjjjjjjjjjjjj");
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -325,7 +395,6 @@ Future<void> editPass(String username,String password,String newpass,String firs
   prefs.setString("last_name", lastname);
   prefs.setString("mail", mail);
   print(firstname);
->>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
 
 }
 

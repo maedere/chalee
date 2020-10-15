@@ -116,8 +116,14 @@ class _SignInActivityState extends State<SignInActivity> {
                     isLoading=true;
 
                 });
-                print(await  login(UserRegister(username : _userController1.text + _userController2.text,
-                  password: _passController.text,), _scaffoldKey)+"here");
+                  login(UserRegister(username : _userController1.text + _userController2.text,
+                  password: _passController.text,), _scaffoldKey).then((value){
+                    print(value);
+                    print("***");
+                    setState(() {
+                      isLoading=false;
+                    });
+                });
               },
               child : signInButton(context),
 

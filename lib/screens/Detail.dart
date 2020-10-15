@@ -140,6 +140,7 @@ class _DetailState extends State<Detail> {
                       children: [
                         GestureDetector(
                           onTap: () {
+                            if(show==false)
                               getGoodComment(widget.id, "0", widget._key).then((value){
                                 setState(() {
                                   widget.goodComments=value;
@@ -148,6 +149,13 @@ class _DetailState extends State<Detail> {
                                   else
                                     _alignmentDirectional = AlignmentDirectional.topCenter;
                                 });
+                              });
+                            else
+                              setState(() {
+                                if(_alignmentDirectional == AlignmentDirectional.topCenter)
+                                  _alignmentDirectional = AlignmentDirectional.bottomCenter;
+                                else
+                                  _alignmentDirectional = AlignmentDirectional.topCenter;
                               });
 
                           },

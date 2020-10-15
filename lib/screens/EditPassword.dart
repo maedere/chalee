@@ -136,21 +136,18 @@ class _EditPasswordState extends State<EditPassword> {
                     child: InkWell(
                       onTap: ()
                       {
-<<<<<<< HEAD
                         editPass(username,password,newpass.text,firstname,lastName,email, _key);
                         print(username+"username");
                         print(password+"password");
                         print(newpass.text+"newpass1");
-                        newpass1=newpass.text;
+                        //newpass1=newpass.text;
                         print(firstname);
                         print(lastName);
                         print(email);
 
                         if(newpass.text!=repeatpass.text)
-=======
                         print(password);
                         if(oldpass.text!=password)
->>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
                         {
                           showInSnackBar("Your Old Password Is Wrong!");
                         }

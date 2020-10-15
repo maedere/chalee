@@ -21,6 +21,7 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  bool like=false;
   bool check = false;
   String dropdownValue = "Select Category";
   String categoryid="";
@@ -49,19 +50,19 @@ class _MenuState extends State<Menu> {
               categoryid=i.id;
           }
           bool hascategory=false;
-              for(final i in value.products)
-              {
-                _listProduct.add(i);
+          for(final i in value.products)
+          {
+            _listProduct.add(i);
 
-                if(i.categoryId==categoryid)
-                 {
-                   _listProductShow.add(i);
-                   hascategory=true;
-                 }
-              }
-              if(hascategory==false)
-                _listProductShow=_listProduct;
+            if(i.categoryId==categoryid)
+            {
+              _listProductShow.add(i);
+              hascategory=true;
             }
+          }
+          if(hascategory==false)
+            _listProductShow=_listProduct;
+        }
 
 
 
@@ -132,9 +133,9 @@ class _MenuState extends State<Menu> {
                         }
                       }
                       if(dropdownValue=="Select Category" || dropdownValue=="All")
-                        {
-                          _listProductShow=_listProduct;
-                        }
+                      {
+                        _listProductShow=_listProduct;
+                      }
 
                     });
                   },
@@ -159,14 +160,14 @@ class _MenuState extends State<Menu> {
             ),
             Expanded(
               child: GridView.count(
-                padding: EdgeInsets.all(8),
-                crossAxisCount: 2,
-                scrollDirection: Axis.vertical,
-                childAspectRatio: 1,
-                children: //_listProduct.length > 0 ?
-                    _listProductShow.map((e){
-                      return _productMenu(e);
-                    }).toList()
+                  padding: EdgeInsets.all(8),
+                  crossAxisCount: 2,
+                  scrollDirection: Axis.vertical,
+                  childAspectRatio: 1,
+                  children: //_listProduct.length > 0 ?
+                  _listProductShow.map((e){
+                    return _productMenu(e);
+                  }).toList()
 
               ),
             ),
@@ -184,7 +185,7 @@ class _MenuState extends State<Menu> {
                 padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
                 onPressed: () => {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => MyCartActivity(),),),
+                    MaterialPageRoute(builder: (context) => MyCartActivity(),),),
                 },
                 child: Text(
                   "Check Out",
@@ -215,7 +216,7 @@ class _MenuState extends State<Menu> {
   }*/
 
   Widget _productMenu(ProductModel product) {
-
+   // bool like=false;
     _check(product);
     return GestureDetector(
       onTap: () {
@@ -271,6 +272,22 @@ class _MenuState extends State<Menu> {
                     (product.price-(product.discount*product.price/100)).toStringAsFixed(2).toString(),
                     style: TextStyle(color: ColorApp.primary, fontSize: 15),
                   ),
+                  IconButton(
+                    icon:like == true? Icon(
+                      Icons.favorite,
+                      color: ColorApp.primary,
+                    ):Icon(
+                      Icons.favorite_border,
+                      color: ColorApp.primary,
+                    ),
+                    onPressed: (){
+                      print(like);
+                      setState(() {
+                        like=!like;
+                      });
+                    },
+                  ),
+
                   Expanded(child: SizedBox()),
                   if (product.count == 0)
                     GestureDetector(
@@ -352,9 +369,9 @@ class _MenuState extends State<Menu> {
 
   void _check(ProductModel p){
     if(p.count!=null)
-    if(p.count > 0){
-      check = true;
-    }
-    
+      if(p.count > 0){
+        check = true;
+      }
+
   }
 }

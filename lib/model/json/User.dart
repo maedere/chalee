@@ -99,12 +99,19 @@ class User {
 }
 
 class Address {
-  Address({
+  /*Address({
     this.id,
     this.address,
     this.lat,
     this.lng,
-  });
+  });*/
+  Address(
+    this.id,
+    this.address,
+    this.lat,
+    this.lng,
+  );
+
 
   String id;
   String address;
@@ -112,10 +119,10 @@ class Address {
   String lng;
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
-    id: json["id"],
-    address: json["address"],
-    lat: json["lat"],
-    lng: json["lng"],
+     json["id"],
+     json["address"],
+     json["lat"],
+     json["lng"],
   );
 
   Map<String, dynamic> toJson() => {
