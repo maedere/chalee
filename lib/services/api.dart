@@ -20,11 +20,11 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 String url = "https://newreza.ir/chale/php/customer/";
+User driver;
 
 //login //ok
 Future<String> login(UserRegister userRegister,
     GlobalKey<ScaffoldState> globalKey) async {
-  User driver;
   String str;
   print(userRegister.username);
   print(userRegister.password);
@@ -43,9 +43,6 @@ Future<String> login(UserRegister userRegister,
       prefs.setString("email", driver.mail.toString());
       prefs.setString("password", driver.password.toString());
       prefs.setString("username", driver.username.toString());
-      prefs.setString("newpass", "");
-      print(driver.lastName.toString());
-      print(driver.firstName.toString());
       Constant.user = driver;
 
       Navigator.pushReplacement(globalKey.currentContext,
@@ -265,8 +262,8 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
-  List <Orders> orders=[];
 
+<<<<<<< HEAD
   Map<String , dynamic> map = {
     "username": "989135083446",
     "password": "654321",
@@ -285,16 +282,28 @@ Future<void> editPass(String username,String password,String newpass,String firs
   };
   var bytes = utf8.encode(json.encode(_body));
 
+=======
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
+    "password": password.toString(),
+    "new_password": newpass.toString(),
+    "first_name":firstname.toString(),
+    "last_name": lastname.toString(),
+    "mail":  mail.toString()
+  };
+  var bytes = utf8.encode(json.encode(_body));
+>>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
   var response = await http.post(
     url + "edit_profile.php",
     body: bytes,
   ).catchError((error) {
     print(error.toString()+"******************************");
-    return orders;
   });
 
 
   var result = jsonDecode(response.body);
+<<<<<<< HEAD
   print(result);
   /*print(username);
   print(password);
@@ -307,8 +316,19 @@ Future<void> editPass(String username,String password,String newpass,String firs
   // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   //return orders;
  return;
+=======
+  print(result["result"]+"jjjjjjjjjjjjj");
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  prefs.setString("password", newpass);
+  prefs.setString("firstname", firstname);
+  prefs.setString("last_name", lastname);
+  prefs.setString("mail", mail);
+  print(firstname);
+>>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
 
 }
+
 
 
 

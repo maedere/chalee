@@ -1,6 +1,7 @@
 
 import 'package:chalee/elements/DialogTest.dart';
 import 'package:chalee/screens/ChooseLcoation.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'EditPassword.dart';
 String firstname;
 String lastname;
 String email;
+<<<<<<< HEAD
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -19,6 +21,12 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   bool edit=false;
 
+=======
+class Profile extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+
+  //todo add edit
+>>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
   @override
   Widget build(BuildContext context) {
     SharedPreferences sahredprfrenc;
@@ -239,8 +247,14 @@ class _ProfileState extends State<Profile> {
                       onTap: ()
                       {
                         Navigator.of(context).push(MaterialPageRoute(
+<<<<<<< HEAD
                             builder: (context)=>EditPassword()
                         ));
+=======
+
+                                builder: (context)=>EditPassword()
+                            ));
+>>>>>>> 78d8938d862469ac9e187055e71c66edc96c279f
                       },
                       child: Align(
                         alignment: Alignment.center,
