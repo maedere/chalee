@@ -215,7 +215,7 @@ class _MenuState extends State<Menu> {
   }*/
 
   Widget _productMenu(ProductModel product) {
-
+ bool like=false;
     _check(product);
     return GestureDetector(
       onTap: () {
@@ -271,6 +271,35 @@ class _MenuState extends State<Menu> {
                     (product.price-(product.discount*product.price/100)).toStringAsFixed(2).toString(),
                     style: TextStyle(color: ColorApp.primary, fontSize: 15),
                   ),
+
+                  if(like)
+                  IconButton(
+                    onPressed: (){
+                      print(like);
+                      setState(() {
+                        like=!like;
+                      });
+                    },
+                    icon: Icon(
+                      Icons.favorite,
+                      color: ColorApp.primary,
+                    ),
+
+                  ),
+                  if(!like)
+                    IconButton(
+                      onPressed: (){
+                        print(like);
+                        setState(() {
+                          like=!like;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.favorite_border,
+                        color: ColorApp.primary,
+                      ),
+
+                    ),
                   Expanded(child: SizedBox()),
                   if (product.count == 0)
                     GestureDetector(

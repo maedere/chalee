@@ -28,7 +28,6 @@ class Setting extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(icon: Icon(FlutterIcons.ios_exit_ion), onPressed: null)
         ],
       ),
       body: SafeArea(
