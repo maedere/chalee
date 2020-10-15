@@ -44,9 +44,9 @@ class Orders {
 }
 class SimpleGood{
   String id;
-  String name;
+  int count;
 
-  SimpleGood(this.id, this.name);
+  SimpleGood(this.id, this.count);
 }
 
 class Goods {

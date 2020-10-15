@@ -142,7 +142,7 @@ class _EditPasswordState extends State<EditPassword> {
                     child: InkWell(
                       onTap: ()
                       {
-                        var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
+                        editPass(username,password,newpass.text,firstname,lastName,email, _key);
                         print(username+"username");
                         print(password+"password");
                         print(newpass.text+"newpass1");

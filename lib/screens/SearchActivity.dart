@@ -44,6 +44,8 @@ class _SearchActivityState extends State<SearchActivity> {
         print("here");
         if(shops != null) {
           shops = value;
+
+
         }
       });
     });
@@ -52,6 +54,7 @@ class _SearchActivityState extends State<SearchActivity> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         actions: [

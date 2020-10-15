@@ -19,6 +19,7 @@ class ShopDetailActivity extends StatefulWidget {
 class _ShopDetailActivityState extends State<ShopDetailActivity> {
   @override
   Widget build(BuildContext context) {
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(

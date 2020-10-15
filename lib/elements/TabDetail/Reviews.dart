@@ -9,7 +9,7 @@ class Reviews extends StatefulWidget {
   final String shopId;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   Reviews(@required this.shopId);
-  List<ShopComment> shopComments=[];
+  List<Shop_Good_Comment> shopComments=[];
 
   @override
   _ReviewsState createState() => _ReviewsState();
@@ -114,8 +114,9 @@ class _ReviewsState extends State<Reviews> {
                             'Comment',
                             textAlign: TextAlign.center,
                           ),
+                          type: "shop",
                           starColor: Colors.yellowAccent,
-                          shopId: widget.shopId,
+                          shop_good_Id: widget.shopId,
                           isRoundedButtons: true,
                           positiveButtonText: 'Ok',
                           negativeButtonText: 'Cancel',
@@ -163,7 +164,12 @@ class _ReviewsState extends State<Reviews> {
               height: 30,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
+                image: i.rate==null?DecorationImage(image: AssetImage("assets/images/cry.png",),):
+                i.rate=="1"? DecorationImage(image: AssetImage("assets/images/angry.png",),):
+                i.rate=="2"?DecorationImage(image: AssetImage("assets/images/cry.png",),):
+                i.rate=="3"?DecorationImage(image: AssetImage("assets/images/sad.png",),):
+                i.rate=="4"?DecorationImage(image: AssetImage("assets/images/smile.png",),):
+                DecorationImage(image: AssetImage("assets/images/love.png",),),
               ),
             ),
             Expanded(child: Column(

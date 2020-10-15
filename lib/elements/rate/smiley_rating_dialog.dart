@@ -31,7 +31,7 @@ class SmileyRatingDialog extends StatefulWidget {
   // Title of Dialog
   final Widget title;
 
-  final String shopId;
+  final String shop_good_Id;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   TextEditingController controller=new TextEditingController();
@@ -39,6 +39,7 @@ class SmileyRatingDialog extends StatefulWidget {
   // Whether the corners of the buttons should be rounded or not
   final bool isRoundedButtons;
 
+  final String type;
   String _text="";
 
   String getText(){
@@ -47,9 +48,10 @@ class SmileyRatingDialog extends StatefulWidget {
   String get text => _text;
 
   SmileyRatingDialog(
-      {this.starColor = Colors.yellow,
+      {this.type,
+        this.starColor = Colors.yellow,
       this.title,
-        this.shopId,
+        this.shop_good_Id,
       @required this.onSubmitPressed,
       @required this.onCancelPressed,
       @required this.positiveButtonText,
@@ -136,9 +138,12 @@ class _SmileyRatingDialogState extends State<SmileyRatingDialog> {
                   SharedPreferences sharedPrefs;
                   SharedPreferences.getInstance().then((prefs) {
                     sharedPrefs = prefs;
-                    postShopComment(sharedPrefs.getString("username"), sharedPrefs.getString("password"),
-                  widget.shopId, widget.controller.text, widget._key);
-                    print(widget.controller.text+"--");
+                    if(widget.type=="shop")
+                      postShopComment(sharedPrefs.getString("username"), sharedPrefs.getString("password"),
+                      widget.shop_good_Id, widget.controller.text,_rating.toDouble(), widget._key);
+                    if(widget.type=="good")
+                      postGoodComment(sharedPrefs.getString("username"), sharedPrefs.getString("password"),
+                          widget.shop_good_Id, widget.controller.text,_rating.toDouble(), widget._key);
 
                   });
 

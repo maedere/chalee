@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:chalee/model/json/Location.dart';
 import 'package:chalee/screens/SelectionActivity.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -223,6 +224,7 @@ class _ChooseLocationState extends State<ChooseLocation> {
         lat: centerLatLng.target.latitude,
         lng: centerLatLng.target.longitude,
         address: myController.text);
+    addAddress(address,_scaffoldKey);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool("address", true);
     prefs.setString("addressData", jsonEncode(address));

@@ -339,7 +339,7 @@ class _CheckOutState extends State<CheckOut> {
 
                   List<SimpleGood> simpleGoods=[];
                   for(final i in Constant.orders) {
-                    simpleGoods.add(new SimpleGood(i.id, i.name));
+                    simpleGoods.add(new SimpleGood(i.id, i.count));
 
                   }
                   SharedPreferences sharedPrefs;
@@ -356,14 +356,14 @@ class _CheckOutState extends State<CheckOut> {
                         sharedPrefs.getString("address1"),
                         sharedPrefs.getString("lat"),
                         sharedPrefs.getString("lng"),
-                        "",
+                        "0",
                         descriptionController.text,
                         cashPayment == true ? "cash" : "online",
                         simpleGoods,
                         _scaffoldKey).then((value) {
-                      setState(() {
+                        setState(() {
                         orderStatus=value["result"];
-                        orderTime=value["time"];
+                        orderTime=value["time"].toString();
                         _currentIndex++;
                         finishThree=true;
 

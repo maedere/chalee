@@ -1,3 +1,5 @@
+
+import 'package:chalee/elements/DialogTest.dart';
 import 'package:chalee/screens/ChooseLcoation.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,17 +11,23 @@ import 'EditPassword.dart';
 String firstname;
 String lastname;
 String email;
-class Profile extends StatelessWidget {
-  //todo add edit
+class Profile extends StatefulWidget {
+  @override
+  _ProfileState createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  bool edit=false;
+
   @override
   Widget build(BuildContext context) {
-  SharedPreferences sahredprfrenc;
-  SharedPreferences.getInstance().then((prefs) {
-    sahredprfrenc=prefs;
-    firstname =(sahredprfrenc.getString("firstname"));
-    lastname =(sahredprfrenc.getString("lastName"));
-    email =(sahredprfrenc.getString("email"));
-  });
+    SharedPreferences sahredprfrenc;
+    SharedPreferences.getInstance().then((prefs) {
+      sahredprfrenc=prefs;
+      firstname =(sahredprfrenc.getString("firstname"));
+      lastname =(sahredprfrenc.getString("lastName"));
+      email =(sahredprfrenc.getString("email"));
+    });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -32,9 +40,16 @@ class Profile extends StatelessWidget {
             fontFamily: "main",
           ),
         ),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: null),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: (){},color: Colors.grey,),
         actions: [
-          IconButton(icon: Icon(FlutterIcons.pencil_alt_faw5s), onPressed: null)
+          IconButton(icon: edit==false? Icon(FlutterIcons.pencil_alt_faw5s) :Icon(Icons.check),
+            onPressed:(){
+            setState(() {
+              edit=!edit;
+
+            });
+            },
+              color: Colors.grey)
         ],
       ),
       body: SafeArea(
@@ -57,19 +72,23 @@ class Profile extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  IconButton(
+                  edit==true?IconButton(
                     icon: Icon(
                       Icons.add_circle_outline,
                       color: ColorApp.primary,
                     ),
                     onPressed: (){
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (_) => LogoutOverlay(),
+                      // );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => ChooseLocation()),
                       );
                     },
-                  ),
+                  ):SizedBox(),
                   SizedBox(
                     width: 5,
                   ),
@@ -105,13 +124,19 @@ class Profile extends StatelessWidget {
                     width: 5,
                   ),
                   Expanded(
-                    child: Text(
+                    child: edit==false? Text(
                       firstname,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: "main",
                       ),
+                    ): TextField(
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: firstname,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
 
@@ -137,13 +162,20 @@ class Profile extends StatelessWidget {
                     width: 5,
                   ),
                   Expanded(
-                    child: Text(
+                    child: edit==false?Text(
                       lastname,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: "main",
                       ),
+                    ):
+                    TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: lastname,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
@@ -168,13 +200,20 @@ class Profile extends StatelessWidget {
                     width: 5,
                   ),
                   Expanded(
-                    child: Text(
+                    child:edit==false? Text(
                       email,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.black,
                         fontFamily: "main",
                       ),
+                    ):
+                    TextField(
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: email,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ],
@@ -186,7 +225,7 @@ class Profile extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Expanded (
+              edit==true?Expanded (
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -200,8 +239,8 @@ class Profile extends StatelessWidget {
                       onTap: ()
                       {
                         Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context)=>EditPassword()
-                            ));
+                            builder: (context)=>EditPassword()
+                        ));
                       },
                       child: Align(
                         alignment: Alignment.center,
@@ -219,7 +258,7 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ):SizedBox(),
               SizedBox(
                 height: MediaQuery.of(context).size.height/80,
               ),
@@ -228,5 +267,182 @@ class Profile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+}
+
+
+//-------------------------------
+class LogoutOverlay extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => LogoutOverlayState();
+}
+
+class LogoutOverlayState extends State<LogoutOverlay>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> scaleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    scaleAnimation =
+        CurvedAnimation(parent: controller, curve: Curves.elasticInOut);
+
+    controller.addListener(() {
+      setState(() {});
+    });
+
+    controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Material(
+        color: Colors.transparent,
+        child: ScaleTransition(
+          scale: scaleAnimation,
+          child: Container(
+              margin: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(15.0),
+              height: 320.0,
+
+              decoration: ShapeDecoration(
+                  color: Colors.grey,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0))),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            top: 30.0, left: 20.0, right: 20.0),
+                        child: Text(
+                          "choose your address",
+                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                        ),
+                      )),
+
+                  Expanded(
+                      child: Column(
+                        children: comments(),
+                      )
+                    /*Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ButtonTheme(
+                                height: 35.0,
+                                minWidth: 110.0,
+                                child: RaisedButton(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0)),
+                                  splashColor: Colors.white.withAlpha(40),
+                                  child: Text(
+                                    'Logout',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13.0),
+                                  ),
+                                  onPressed: () {
+                                    // setState(() {
+                                    //   Route route = MaterialPageRoute(
+                                    //       builder: (context) => LoginScreen());
+                                    //   Navigator.pushReplacement(context, route);
+                                    // });
+                                  },
+                                )),
+                          ),
+                          Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, right: 10.0, top: 10.0, bottom: 10.0),
+                              child:  ButtonTheme(
+                                  height: 35.0,
+                                  minWidth: 110.0,
+                                  child: RaisedButton(
+                                    color: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5.0)),
+                                    splashColor: Colors.white.withAlpha(40),
+                                    child: Text(
+                                      'Cancel',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13.0),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                         Route route = MaterialPageRoute(
+                                          builder: (context) => LoginScreen());
+                                      Navigator.pushReplacement(context, route);
+                                    });
+                                    },
+                                  ))
+                          ),
+                        ],
+                      )*/),
+                ],
+              )),
+        ),
+      ),
+    );
+  }
+  List<Widget> comments() {
+    List<Widget> list = List();
+    List<int> locations=[1,2,4];
+    //i<5, pass your dynamic limit as per your requirment
+    for (final i in locations) {
+      list.add(
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          child: Row(
+            children: [
+              IconButton( icon: Icon(
+                Icons.location_on_sharp,
+                color: Colors.black,
+              )),
+             SizedBox(width: 20,),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontFamily: "main",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 1,
+                  ),
+                  Text(
+                    "lolllll",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: "main",
+                    ),
+                  ),
+                  IconButton( icon: Icon(
+                    Icons.check_box_outline_blank_sharp,
+                    color: Colors.black,
+                  )),                ],
+              ),)
+            ],
+          ),
+        ),
+      );//add any Widget in place of Text("Index $i")
+    }
+    return list;// all widget added now retrun the list here
   }
 }

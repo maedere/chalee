@@ -194,18 +194,32 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
 //add_address.php
 Future<void> addAddress(LocationModel request,
     GlobalKey<ScaffoldState> globalKey) async {
-  var response = http.post(
+  print(request.address);
+  print(request.lat);
+  print(request.lng);
+  var _body = <String, dynamic> {
+    "username": "989135083446",
+    "password": "654321",
+    "address": "1",
+    "lat": 35.71995692074798,
+    "lng": 51.40602104365826,
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
     url + "add_address.php",
-    body: json.encode(request),
-  );
-  response.then((value) {
-    String result = jsonDecode(value.body)["result"];
-    if(result == "ok"){
-      //todo replacement 2 way: home , profile
-    }
-  }).catchError((error) {
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
     return error;
   });
+  var result = jsonDecode(response.body);
+
+  print(result);
+    if(result["result"] == "ok"){
+      //todo replacement 2 way: home , profile
+    }
+
 
 }
 
@@ -249,27 +263,31 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 
 
-Future editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
+Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
   List <Orders> orders=[];
 
   Map<String , dynamic> map = {
-    /*"username": username.toString(),
-    "password": password.toString(),
-    "new_password": newpass.toString(),
-    "first_name": firstname.toString(),
-    "last_name": lastname.toString(),
-    "mail": mail.toString()*/
     "username": "989135083446",
-    "password": "1254",
+    "password": "654321",
     "new_password": "654321",
     "first_name": "Reza",
     "last_name": "Beman",
     "mail": "rezabeman@gmail.com"
   };
+  var _body = <String, dynamic> {
+    "username": "989135083446",
+    "password": "654321",
+    "new_password": "654321",
+    "first_name": "Reza",
+    "last_name": "Beman",
+    "mail": "rezabeman@gmail.com"
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
   var response = await http.post(
     url + "edit_profile.php",
-    body: map,
+    body: bytes,
   ).catchError((error) {
     print(error.toString()+"******************************");
     return orders;
@@ -277,18 +295,18 @@ Future editPass(String username,String password,String newpass,String firstname,
 
 
   var result = jsonDecode(response.body);
-  print(result["result"]+"jjjjjjjjjjjjj");
-  print(username);
+  print(result);
+  /*print(username);
   print(password);
   print(lastname);
   print(mail);
   print(newpass);
-  print(firstname);
+  print(firstname);*/
 
   //print(result["goods"]);
   // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   //return orders;
-
+ return;
 
 }
 
@@ -302,7 +320,7 @@ Future<Map> addOrder(String username,String password,String shop_id,
 
   var goods = <Map<String, String>>[];
   for(final i in simplegoods)
-    goods.add({"id":i.id,"name":i.name});
+    goods.add({"id":i.id,"count":i.count.toString()});
 
   var _body = <String, dynamic> {
     "username": username,
@@ -321,6 +339,7 @@ Future<Map> addOrder(String username,String password,String shop_id,
     "goods": goods ,
 
   };
+
   var bytes = utf8.encode(json.encode(_body));
 
   var response = await http.post(
@@ -341,47 +360,41 @@ Future<Map> addOrder(String username,String password,String shop_id,
   return returnvalue;
 }
 
-Future <void> getGoodComment(String good_id,String rangeId,
+Future<List<Shop_Good_Comment>> getGoodComment(String shop_id,String range_id,
     GlobalKey<ScaffoldState> globalKey) async {
 
-  print(good_id+"--");
+  List<Shop_Good_Comment> goodComments=[];
   var _body = <String, dynamic> {
-    "good_id": good_id,
-    "range_id": rangeId
-
+    "good_id": shop_id,
+    "range_id": range_id,
   };
   var bytes = utf8.encode(json.encode(_body));
-
 
   var response = await http.post(
     url + "get_good_comments.php",
     body: bytes,
   ).catchError((error) {
     print(error.toString());
+    return error;
   });
 
 
   var result = jsonDecode(response.body);
-  printWrapped(result);
- /* if(result["result"] == "ok"){
-    //subCategories=subCategoriesListFromJson(result["subcategories"]);
-    for(final i in result["orders"])
-    {
-      List<Goods> goods=[];
-      for(final j in i["goods"])
-        goods.add(new Goods(j["id"],j["name"],j["image_url"],j["price"],j["discount"],j["count"]));
-      orders.add(new Orders(i["id"],i["shop_id"],i["shop_name"],i["shop_image_url"],i["shop_accept_time"],i["total_payment"],i["time"],i["status"],goods));
-    }
-  }*/
-  //print(result["goods"]);
-  // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
+  printWrapped(response.body);
+  if(result["result"]=="ok")
+  {
+    for(final i in result["comments"])
+      goodComments.add(new Shop_Good_Comment(i["id"], i["good_id"], i["commenter_id"],
+          i["commenter_name"], i["comment"], i["time"],i["rate"].toString()));
+  }
 
+  return goodComments;
 
 }
 
 
-Future<void> postGoodComment(String username,String password,String good_id,
-    String comment, GlobalKey<ScaffoldState> globalKey) async {
+Future<String> postGoodComment(String username,String password,String good_id,
+    String comment,double rate, GlobalKey<ScaffoldState> globalKey) async {
 
 
   var _body = <String, dynamic> {
@@ -389,6 +402,7 @@ Future<void> postGoodComment(String username,String password,String good_id,
     "password": password,
     "good_id": good_id,
     "comment" : comment,
+    "rate": rate
   };
   var bytes = utf8.encode(json.encode(_body));
 
@@ -402,13 +416,14 @@ Future<void> postGoodComment(String username,String password,String good_id,
 
   var result = jsonDecode(response.body);
   printWrapped(response.body);
+  return(result["result"]);
 
 
 }
 
-Future<List<ShopComment>> getShopComment(String shop_id,String range_id, GlobalKey<ScaffoldState> globalKey) async {
+Future<List<Shop_Good_Comment>> getShopComment(String shop_id,String range_id, GlobalKey<ScaffoldState> globalKey) async {
 
-  List<ShopComment> shopComments=[];
+  List<Shop_Good_Comment> shopComments=[];
   var _body = <String, dynamic> {
     "shop_id": shop_id,
     "range_id": range_id,
@@ -429,22 +444,24 @@ Future<List<ShopComment>> getShopComment(String shop_id,String range_id, GlobalK
   if(result["result"]=="ok")
     {
       for(final i in result["comments"])
-        shopComments.add(new ShopComment(i["id"], i["shop_id"], i["commenter_id"],
-            i["commenter_name"], i["comment"], i["time"]));
+        shopComments.add(new Shop_Good_Comment(i["id"], i["shop_id"], i["commenter_id"],
+            i["commenter_name"], i["comment"], i["time"],i["rate"].toString()));
     }
 
   return shopComments;
 
 }
 
-Future<String> postShopComment(String username,String password,String shop_id,String comment, GlobalKey<ScaffoldState> globalKey) async {
+Future<String> postShopComment(String username,String password,String shop_id,String comment,
+    double rate,GlobalKey<ScaffoldState> globalKey) async {
 
-  List<ShopComment> shopComments=[];
+  List<Shop_Good_Comment> shopComments=[];
   var _body = <String, dynamic> {
     "username": username,
     "password": password,
     "shop_id": shop_id,
-    "comment": comment
+    "comment": comment,
+    "rate":rate
   };
   var bytes = utf8.encode(json.encode(_body));
 

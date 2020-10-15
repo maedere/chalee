@@ -1,4 +1,5 @@
 import 'package:chalee/elements/rate/smiley_rating_dialog.dart';
+import 'package:chalee/model/json/ShopComment.dart';
 import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class Detail extends StatefulWidget {
   final String spicy;
   final String id;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
-
+  List<Shop_Good_Comment> goodComments=[];
   Detail({@required this.image, @required this.heroTag, this.description, this.finalPrice, this.calory,this.spicy,this.id});
 
   @override
@@ -139,13 +140,16 @@ class _DetailState extends State<Detail> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            setState(() {
-                              getGoodComment(widget.id, "0", widget._key);
-                              if(_alignmentDirectional == AlignmentDirectional.topCenter)
-                              _alignmentDirectional = AlignmentDirectional.bottomCenter;
-                              else
-                                _alignmentDirectional = AlignmentDirectional.topCenter;
-                            });
+                              getGoodComment(widget.id, "0", widget._key).then((value){
+                                setState(() {
+                                  widget.goodComments=value;
+                                  if(_alignmentDirectional == AlignmentDirectional.topCenter)
+                                    _alignmentDirectional = AlignmentDirectional.bottomCenter;
+                                  else
+                                    _alignmentDirectional = AlignmentDirectional.topCenter;
+                                });
+                              });
+
                           },
                           child: AnimatedContainer(
                             duration: Duration(milliseconds: 600),
@@ -194,160 +198,13 @@ class _DetailState extends State<Detail> {
                                   if(show)
                                     Container(
                                       width: MediaQuery.of(context).size.width,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
-                                            ),
-                                          ),
-                                          Expanded(child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "  saturday , june 12th 2020 , 03:46 - naser",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "i hated",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                            ],
-                                          ),)
-                                        ],
+                                      //height: 50,
+                                      child: Column(
+                                        children: comments(),
                                       ),
-                                    ),
-                                  if(show)
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(image: AssetImage("assets/images/smile.png",),),
-                                            ),
-                                          ),
-                                          Expanded(child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "  Monday , june 8th 2020 , 03:46 - s",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "  hi , very good",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                            ],
-                                          ),)
-                                        ],
-                                      ),
-                                    ),
-                                  if(show)
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
-                                            ),
-                                          ),
-                                          Expanded(child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "  saturday , june 12th 2020 , 03:46 - naser",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "i hated",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                            ],
-                                          ),)
-                                        ],
-                                      ),
-                                    ),
-                                  if(show)
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 50,
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(image: AssetImage("assets/images/cry.png",),),
-                                            ),
-                                          ),
-                                          Expanded(child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                "  saturday , june 12th 2020 , 03:46 - naser",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                "i 55",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontFamily: "main",
-                                                ),
-                                              ),
 
-                                            ],
-                                          ),)
-                                        ],
-                                      ),
                                     ),
+
                                 ],
                               ),
                             ),
@@ -370,12 +227,14 @@ class _DetailState extends State<Detail> {
                                   context: context,
                                   builder: (context) {
                                     return SmileyRatingDialog(
+                                      shop_good_Id: widget.id,
                                       title: Text(
                                         'Comment',
                                         textAlign: TextAlign.center,
                                       ),
                                       starColor: Colors.yellowAccent,
                                       isRoundedButtons: true,
+                                      type: "good",
                                       positiveButtonText: 'Ok',
                                       negativeButtonText: 'Cancel',
                                       positiveButtonColor: ColorApp.primary,
@@ -407,5 +266,58 @@ class _DetailState extends State<Detail> {
         ],
       )),
     );
+  }
+  List<Widget> comments() {
+    List<Widget> list = List();
+    //i<5, pass your dynamic limit as per your requirment
+    for (final i in widget.goodComments) {
+
+      list.add(
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: i.rate==null?DecorationImage(image: AssetImage("assets/images/cry.png",),):
+                  i.rate=="1"? DecorationImage(image: AssetImage("assets/images/angry.png",),):
+                  i.rate=="2"?DecorationImage(image: AssetImage("assets/images/cry.png",),):
+                  i.rate=="3"?DecorationImage(image: AssetImage("assets/images/sad.png",),):
+                  i.rate=="4"?DecorationImage(image: AssetImage("assets/images/smile.png",),):
+                  DecorationImage(image: AssetImage("assets/images/love.png",),),
+                ),
+              ),
+              Expanded(child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "  ${i.time} - ${i.commenterName}",
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontFamily: "main",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    i.comment,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontFamily: "main",
+                    ),
+                  ),
+                ],
+              ),)
+            ],
+          ),
+        ),
+      );//add any Widget in place of Text("Index $i")
+    }
+    return list;// all widget added now retrun the list here
   }
 }
