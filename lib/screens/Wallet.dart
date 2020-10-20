@@ -2,6 +2,10 @@ import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
 
 class Wallet extends StatelessWidget {
+  String wallet="";
+
+  Wallet(this.wallet);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +39,7 @@ class Wallet extends StatelessWidget {
               color: ColorApp.primary,
               child: Center(
                 child: Text(
-                  "\$109.65",
+                  wallet,
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "main",

@@ -1,13 +1,6 @@
-import 'package:chalee/model/json/EditPass.dart';
-import 'package:chalee/model/json/User.dart';
-import 'package:chalee/screens/Profile.dart';
-import 'package:chalee/util/Constant.dart';
-import 'package:chalee/value/ColorApp.dart';
 import 'package:chalee/services/api.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ChooseLcoation.dart';
@@ -30,6 +23,7 @@ class _EditPasswordState extends State<EditPassword> {
   void showInSnackBar(String value) {
     _key.currentState.showSnackBar(new SnackBar(content: new Text(value)));
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -136,16 +130,12 @@ class _EditPasswordState extends State<EditPassword> {
                     child: InkWell(
                       onTap: ()
                       {
-                        editPass(username,password,newpass.text,firstname,lastName,email, _key);
                         print(username+"username");
                         print(password+"password");
-                        print(newpass.text+"newpass1");
-                        //newpass1=newpass.text;
                         print(firstname);
                         print(lastName);
                         print(email);
 
-                        if(newpass.text!=repeatpass.text)
                         print(password);
                         if(oldpass.text!=password)
                         {
@@ -158,8 +148,9 @@ class _EditPasswordState extends State<EditPassword> {
                         }
                         else
                         {
+
                           var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
-                          //changePass(UserRegister(username : username , password:newpass.text ,), _key);
+                          password=newpass.text;
                           Navigator.pop(context);
                           showInSnackBar("Your Password Changed Successful");
 
@@ -192,6 +183,3 @@ class _EditPasswordState extends State<EditPassword> {
     );
   }
 }
-
-
-

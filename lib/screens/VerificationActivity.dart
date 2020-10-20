@@ -7,8 +7,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class VerificationActivity extends StatefulWidget {
 
   final String mobile;
+  final String password;
 
-  VerificationActivity({@required this.mobile});
+  VerificationActivity({@required this.mobile,
+    @required this.password});
 
   @override
   _VerificationActivityState createState() => _VerificationActivityState();
@@ -20,7 +22,7 @@ class _VerificationActivityState extends State<VerificationActivity> {
 
   @override
   void initState() {
-    getCode(widget.mobile, _globalKey).then((result){
+    getCode(widget.mobile,widget.password, _globalKey).then((result){
 
     });
 

@@ -7,6 +7,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 String firstname1="";
 class Setting extends StatelessWidget {
+  String wallet="";
+
+  Setting(this.wallet);
+
   @override
   Widget build(BuildContext context) {
     SharedPreferences.getInstance().then((prefs) {
@@ -95,7 +99,7 @@ class Setting extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Wallet()),
+                    MaterialPageRoute(builder: (context) => Wallet(wallet)),
                   );
                 },
                 child: Row(
@@ -134,7 +138,7 @@ class Setting extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Wallet()),
+                    MaterialPageRoute(builder: (context) => Wallet(wallet)),
                   );
                 },
                 child: Row(

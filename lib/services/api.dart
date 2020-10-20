@@ -35,6 +35,7 @@ Future<String> login(UserRegister userRegister,
   ).catchError((error){
     print(error.toString());
     globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
+    return(error.toString());
 
   });
 
@@ -48,6 +49,7 @@ Future<String> login(UserRegister userRegister,
       prefs.setString("email", driver.mail.toString());
       prefs.setString("password", driver.password.toString());
       prefs.setString("username", driver.username.toString());
+      prefs.setString("wallet", driver.wallet.toString());
       Constant.user = driver;
 
       Navigator.pushReplacement(globalKey.currentContext,
@@ -61,7 +63,8 @@ Future<String> login(UserRegister userRegister,
       globalKey.currentState.showSnackBar(Constant.snak(" no verification"));
       //go to sms_verification
       Navigator.push(globalKey.currentContext, MaterialPageRoute(
-        builder: (context) => VerificationActivity(mobile: userRegister.username,),),);
+        builder: (context) => VerificationActivity(mobile: userRegister.username,
+          password: userRegister.password,),),);
     }
   return str;
 
@@ -114,8 +117,11 @@ Future<List<Shop>> getShopType(ShopRequestType shopRequestType,
 
 
 //get_confirmation_code
-Future<String> getCode(String user, GlobalKey<ScaffoldState> globalKey) async {
-  Map<String, dynamic> jsonBody = {"username": user};
+Future<String> getCode(String user,String password, GlobalKey<ScaffoldState> globalKey) async {
+  Map<String, dynamic> jsonBody =
+  {"username": user,
+    "password":password
+  };
 
   var response = http.post(
     url + "get_confirmation_code.php",
@@ -123,6 +129,7 @@ Future<String> getCode(String user, GlobalKey<ScaffoldState> globalKey) async {
   );
   response.then((value) {
     String result = jsonDecode(value.body)["result"];
+    print(value.body);
     switch (result) {
       case "ok":
         //todo
@@ -281,11 +288,12 @@ Future<void> addAddress(LocationModel request,String username,
 
 
 }
-
 Future<List<Address>> getAddresses(String userName, String password,
     GlobalKey<ScaffoldState> globalKey) async {
 
   List<Address> addresses=[];
+  print(userName);
+  print(password);
   var _body = <String, dynamic> {
       "username": userName,
       "password": password
@@ -318,6 +326,7 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
     GlobalKey<ScaffoldState> globalKey) async {
   List <Orders> orders=[];
 
+
   Map<String , dynamic> map = {
     "username": username,
     "password": password,
@@ -327,12 +336,14 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
     url + "get_orders.php",
     body: map,
   ).catchError((error) {
-    print(error.toString()+"******************************");
+    print(error.toString());
     return orders;
   });
 
 
   var result = jsonDecode(response.body);
+  printWrapped(response.body);
+
   if(result["result"] == "ok"){
     //subCategories=subCategoriesListFromJson(result["subcategories"]);
     for(final i in result["orders"])
@@ -352,51 +363,6 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
 
 
 
-Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
-    GlobalKey<ScaffoldState> globalKey) async {
-
-
-
-  var _body = <String, dynamic> {
-    "username": username.toString(),
-    "password": password.toString(),
-    "new_password": newpass.toString(),
-    "first_name":firstname.toString(),
-    "last_name": lastname.toString(),
-    "mail":  mail.toString()
-  };
-  var bytes = utf8.encode(json.encode(_body));
-  var response = await http.post(
-    url + "edit_profile.php",
-    body: bytes,
-  ).catchError((error) {
-    print(error.toString()+"******************************");
-  });
-
-
-  var result = jsonDecode(response.body);
-  print(result);
-  /*print(username);
-  print(password);
-  print(lastname);
-  print(mail);
-  print(newpass);
-  print(firstname);*/
-
-  //print(result["goods"]);
-  // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
-  //return orders;
- return;
-  print(result["result"]+"jjjjjjjjjjjjj");
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  prefs.setString("password", newpass);
-  prefs.setString("firstname", firstname);
-  prefs.setString("last_name", lastname);
-  prefs.setString("mail", mail);
-  print(firstname);
-
-}
 
 
 
@@ -570,4 +536,102 @@ Future<String> postShopComment(String username,String password,String shop_id,St
 
   return result["result"];
 
+}
+
+Future<void> addFavoritegood(String username,String password,String goodId,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
+    "password": password.toString(),
+    "good_id":goodId.toString(),
+  };
+  var bytes = utf8.encode(json.encode(_body));
+  var response = await http.post(
+    url + "add_favorite_good.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString()+"******************************");
+  });
+
+
+  var result = jsonDecode(response.body);
+
+  print(result);
+  return;
+}
+
+Future<void> deleteFavoriteGood(String username,String password,String goodId,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
+    "password": password.toString(),
+    "good_id":goodId.toString(),
+  };
+  var bytes = utf8.encode(json.encode(_body));
+  var response = await http.post(
+    url + "delete_favorite_good.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString()+"******************************");
+  });
+
+
+  var result = jsonDecode(response.body);
+
+  print(result);
+  return;
+}
+
+Future<void> getFavotitegood(String username,String password,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
+    "password": password.toString(),
+  };
+  var bytes = utf8.encode(json.encode(_body));
+  var response = await http.post(
+    url + "get_favorite_goods.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString()+"******************************");
+  });
+
+
+  var result = jsonDecode(response.body);
+
+  print(result);
+  return;
+}
+Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
+    GlobalKey<ScaffoldState> globalKey) async {
+
+  var _body = <String, dynamic> {
+    "username": username.toString(),
+    "password": password.toString(),
+    "new_password": newpass.toString(),
+    "first_name":firstname.toString(),
+    "last_name": lastname.toString(),
+    "mail":  mail.toString()
+  };
+  var bytes = utf8.encode(json.encode(_body));
+  var response = await http.post(
+    url + "edit_profile.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString()+"******************************");
+  });
+
+
+  var result = jsonDecode(response.body);
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  prefs.setString("password", newpass);
+  prefs.setString("firstname", firstname);
+  prefs.setString("last_name", lastname);
+  prefs.setString("mail", mail);
+  print(firstname);
+  return;
 }

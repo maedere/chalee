@@ -7,6 +7,7 @@ import 'package:chalee/screens/Setting.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainActivity extends StatefulWidget{
 
@@ -20,8 +21,20 @@ class MainActivity extends StatefulWidget{
 
 class _MainActivityState extends State<MainActivity> {
   int _selectedIndex = 0;
+  String wallet="";
 
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SharedPreferences sahredprfrenc;
+    SharedPreferences.getInstance().then((prefs) {
+      sahredprfrenc=prefs;
+      wallet=(sahredprfrenc.getString("wallet"));
+      print("wallet"+wallet);
+    });
+  }
   @override
   Widget build(BuildContext context) {
 
@@ -31,7 +44,7 @@ class _MainActivityState extends State<MainActivity> {
         body : _selectedIndex == 0 ? SearchActivity(mainCatagory: widget.mainCatagory,) :
       _selectedIndex == 1 ? HistoryActivity() :
         _selectedIndex == 2 ? MyCartActivity() :
-         Setting() ,
+         Setting(wallet) ,
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

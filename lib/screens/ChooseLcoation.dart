@@ -233,15 +233,13 @@ class _ChooseLocationState extends State<ChooseLocation> {
     prefs.setString("addressData", jsonEncode(address));
     username=prefs.getString("username");
     password=prefs.getString("password");
-    addAddress(address,username,password,_scaffoldKey);
+    //addAddress(address,username,password,_scaffoldKey);
 
 
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Profile()),
-    );
-    if (Navigator.canPop(context))
+
+      Navigator.pop(context);
+      Navigator.pop(context);
       Navigator.pop(context);
   }
 }

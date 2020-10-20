@@ -11,10 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'EditPassword.dart';
 String firstname="";
-String lastname;
-String email;
-String username;
-String password;
+String lastname="";
+String email="";
+String username="";
+String password="";
 List<Address> addresses=[];
 class Profile extends StatefulWidget {
   @override
@@ -51,7 +51,13 @@ class _ProfileState extends State<Profile> {
             fontFamily: "main",
           ),
         ),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: (){},color: Colors.grey,),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios),
+          onPressed: (){
+            Navigator.pop(
+              context,
+            );
+          },
+          color: Colors.grey,),
         actions: [
           IconButton(icon: edit==false? Icon(FlutterIcons.pencil_alt_faw5s) :Icon(Icons.check),
             onPressed:(){
@@ -96,7 +102,7 @@ class _ProfileState extends State<Profile> {
                       });
                        showDialog(
                          context: context,
-                         builder: (_) => LogoutOverlay(),
+                         builder: (_) => AddressDialog(),
                        );
 
                     },
@@ -287,12 +293,12 @@ class _ProfileState extends State<Profile> {
 
 
 //-------------------------------
-class LogoutOverlay extends StatefulWidget {
+class AddressDialog extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => LogoutOverlayState();
+  State<StatefulWidget> createState() => AddressDialogState();
 }
 
-class LogoutOverlayState extends State<LogoutOverlay>
+class AddressDialogState extends State<AddressDialog>
     with SingleTickerProviderStateMixin {
   AnimationController controller;
   Animation<double> scaleAnimation;
