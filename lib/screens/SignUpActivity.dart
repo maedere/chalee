@@ -6,13 +6,15 @@ import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'VerificationActivity.dart';
+
 class SignUpActivity extends StatefulWidget {
   @override
   _SignUpActivityState createState() => _SignUpActivityState();
 }
 
 class _SignUpActivityState extends State<SignUpActivity> {
-
+  bool isLoading=false;
   final GlobalKey<ScaffoldState> _globalKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController Cphone1 = TextEditingController();
@@ -116,6 +118,11 @@ class _SignUpActivityState extends State<SignUpActivity> {
             Expanded(child: SizedBox()),
             GestureDetector(
               onTap: (){
+                setState(() {
+                  if(isLoading==false)
+                    isLoading=true;
+
+                });
                 if(
                 Cpass1.text.isNotEmpty &&
                 Cpass2.text.isNotEmpty &&
@@ -124,28 +131,36 @@ class _SignUpActivityState extends State<SignUpActivity> {
                 ) {
                   if (Cpass2.text == Cpass1.text) {
                     registry(UserRegister(username: Cphone1.text + Cphone2.text,
-                        password: Cpass1.text), _globalKey);
+                        password: Cpass1.text), _globalKey).then((value){
+                      if(value=="duplicate")
+                        _globalKey.currentState.showSnackBar(Constant.snak("duplicated username"));
+                      else if(value=="ok")
+                        {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => VerificationActivity(),
+                            ),
+                          );
+                        }
+                      setState(() {
+                        isLoading=false;
+                      });
+                    });
                   } else {
+                    setState(() {
+                      isLoading=false;
+                    });
                      _globalKey.currentState.showSnackBar(Constant.snak("repeat password not true!",),);
                   }
                 }else{
+                  setState(() {
+                    isLoading=false;
+                  });
                   _globalKey.currentState.showSnackBar(Constant.snak("please fill all field",),);
                 }
               },
-              child: Container(
-                height: 150.h,
-                decoration: BoxDecoration(
-                  color: ColorApp.primary,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Center(
-                  child: Text(
-                    "SIGN UP",
-                    style: TextStyle(
-                        color: Colors.white, fontSize: 18, fontFamily: "main"),
-                  ),
-                ),
-              ),
+              child: signUpButton(context),
             ),
             Expanded(child: SizedBox()),
             GestureDetector(
@@ -171,5 +186,34 @@ class _SignUpActivityState extends State<SignUpActivity> {
         ),
       ),
     );
+  }
+  Container signUpButton(context) {
+    if (isLoading == false) {
+      return Container(
+        height: 150.h,
+        decoration: BoxDecoration(
+          color: ColorApp.primary,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Center(
+          child: Text(
+            "SIGN UP",
+            style: TextStyle(
+                color: Colors.white, fontSize: 18, fontFamily: "main"),
+          ),
+        ),
+      );
+    }else{
+      return Container(
+        height: 150.h,
+        decoration: BoxDecoration(
+          color: ColorApp.primary,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
   }
 }

@@ -52,7 +52,6 @@ class _SearchActivityState extends State<SearchActivity> {
         if(shops != null) {
           shops = value;
 
-
         }
       });
     });
@@ -430,7 +429,7 @@ class AddressDialogState extends State<AddressDialog>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ChooseLocation()),
+                                builder: (context) => ChooseLocation(false,"-1")),
                           );
                         },),
                     ),

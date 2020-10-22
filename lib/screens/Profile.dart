@@ -1,5 +1,6 @@
 
 import 'package:chalee/elements/DialogTest.dart';
+import 'package:chalee/model/json/Location.dart';
 import 'package:chalee/model/json/User.dart';
 import 'package:chalee/screens/ChooseLcoation.dart';
 import 'package:chalee/services/api.dart';
@@ -17,6 +18,9 @@ String lastname="";
 String email="";
 String username="";
 String password="";
+String address="";
+String lat="";
+String lng="";
 List<Address> addresses=[];
 TextEditingController fn = new TextEditingController();
 TextEditingController ln = new TextEditingController();
@@ -30,8 +34,19 @@ class _ProfileState extends State<Profile> {
   bool edit=false;
 
 
+
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    getAddresses(username,password,_key).then((value){
+      setState(() {
+        addresses=value;
+      });
+    });
+    super.initState();
+  }
   //todo add edit
   @override
   Widget build(BuildContext context) {
@@ -45,7 +60,13 @@ class _ProfileState extends State<Profile> {
       email =(sahredprfrenc.getString("email"));
       username=(sahredprfrenc.getString("username"));
       password=(sahredprfrenc.getString("password"));
+<<<<<<< Updated upstream
 
+=======
+      address=(sahredprfrenc.getString("address"));
+      lat=(sahredprfrenc.getString("lat"));
+      lng=(sahredprfrenc.getString("lng"));
+>>>>>>> Stashed changes
 
     });
     return Scaffold(
@@ -130,11 +151,7 @@ class _ProfileState extends State<Profile> {
                       color: ColorApp.primary,
                     ),
                     onPressed: (){
-                      getAddresses(username,password,_key).then((value){
-                        setState(() {
-                          addresses=value;
-                        });
-                      });
+
                        showDialog(
                          context: context,
                          builder: (_) => AddressDialog(),
@@ -460,7 +477,7 @@ class AddressDialogState extends State<AddressDialog>
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ChooseLocation()),
+                              builder: (context) => ChooseLocation(false,"-1")),
                         );
                       },),
                     ),
@@ -511,8 +528,9 @@ class AddressDialogState extends State<AddressDialog>
                     ),
                                     ],
                 ),),
-                IconButton( icon: Icon(
-                      Icons.check_box_outline_blank_sharp,
+                 IconButton( icon: Icon(
+                   (!(i.lat==lat && i.lng==lng && i.address==address))? Icons.check_box_outline_blank_sharp
+                   :Icons.check_box_outlined,
                       color: Colors.black,
                     ),
                 onPressed: (){
@@ -523,7 +541,11 @@ class AddressDialogState extends State<AddressDialog>
                       color: Colors.black,
                     ),
                 onPressed: (){
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChooseLocation(true,i.id)),
+                  );
                 },),
                 IconButton( icon: Icon(
                       Icons.delete_forever,
@@ -539,5 +561,10 @@ class AddressDialogState extends State<AddressDialog>
       );//add any Widget in place of Text("Index $i")
     }
     return list;// all widget added now retrun the list here
+  }
+  void stateSetter() {
+    setState(() {
+
+    });
   }
 }

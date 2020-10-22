@@ -24,7 +24,7 @@ class _AboutState extends State<About> {
   void initState() {
       _kGooglePlex = CameraPosition(
       target: LatLng(double.parse(widget.shop.lat), double.parse(widget.shop.lng)),
-      zoom: 14.4746,
+      zoom: 15.4746,
     );
     super.initState();
   }
@@ -34,9 +34,14 @@ class _AboutState extends State<About> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: 20,),
+
+        Text("  Name : "+widget.shop.name),
 
         SizedBox(height: 20,),
-        Text(widget.shop.address),
+        Text("  Address : "+widget.shop.address),
+        SizedBox(height: 20,),
+
 
         Container(
           margin: EdgeInsets.symmetric(horizontal: 15 , vertical: 10),
@@ -54,6 +59,7 @@ class _AboutState extends State<About> {
             markers: Set<Marker>.of(markers.values),
           ),
         ),
+
 
       ],
     );

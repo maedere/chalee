@@ -14,6 +14,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Profile.dart';
 
 class ChooseLocation extends StatefulWidget {
+  bool edit;
+  String addressId;
+
+  ChooseLocation(this.edit, this.addressId);
+
   @override
   _ChooseLocationState createState() => _ChooseLocationState();
 }
@@ -233,7 +238,10 @@ class _ChooseLocationState extends State<ChooseLocation> {
     prefs.setString("addressData", jsonEncode(address));
     username=prefs.getString("username");
     password=prefs.getString("password");
-    //addAddress(address,username,password,_scaffoldKey);
+    if(widget.edit==false)
+      addAddress(address,username,password,_scaffoldKey);
+    else
+      editAddress(address, username, password, widget.addressId, _scaffoldKey);
 
 
 

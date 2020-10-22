@@ -23,15 +23,15 @@ class ListCatagories extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
           child: Container(
-        color: ColorApp.primary,
-        child: ListView.builder(
-            itemCount: mains.length,
-            padding: EdgeInsets.symmetric(vertical: 20),
-            scrollDirection: Axis.vertical,
-            itemBuilder: (context, i) {
-              return _list(context, mains[i]);
-            }),
-      )),
+            color: ColorApp.primary,
+            child: ListView.builder(
+                itemCount: mains.length,
+                padding: EdgeInsets.symmetric(vertical: 20),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, i) {
+                  return _list(context, mains[i]);
+                }),
+          )),
     );
   }
 

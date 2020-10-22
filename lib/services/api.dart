@@ -78,18 +78,26 @@ void printWrapped(String text) {
 //registry
 Future<String> registry(UserRegister user,
     GlobalKey<ScaffoldState> globalKey) async {
-  String result;
 
-  var response = http.post(
-    url + "registry.php",
-    body: userRegisterToJson(user),
-  );
-  response.then((value) {
-    result = jsonDecode(value.body)["result"];
-  }).catchError((error) {
+  var _body = <String, dynamic> {
+    "username":  user.username,
+    "password": user.password,
+  };
+  var bytes = utf8.encode(json.encode(_body));
+
+  var response = await http.post(
+    url + "register.php",
+    body: bytes,
+  ).catchError((error) {
+    print(error.toString());
+    globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
     return error;
   });
-  return result;
+
+  var result = jsonDecode(response.body);
+  print(response.body);
+
+  return result["result"];
 }
 
 //get_shops.php
@@ -104,6 +112,7 @@ Future<List<Shop>> getShopType(ShopRequestType shopRequestType,
   globalKey.currentState.showSnackBar(Constant.snak(error.toString()));
   });
 
+  printWrapped(response.body);
   ResopnsShop respnse = resopnsShopFromJson(response.body);
   if (respnse.result == "ok") {
     shops = respnse.shops;
@@ -191,8 +200,9 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("address1",result["address"]);
-  prefs.setString("lat", result["lat"]);
-  prefs.setString("lng", result["lng"]);
+  prefs.setString("lat1", result["lat"]);
+  prefs.setString("lng1", result["lng"]);
+
 
   model=DetailProductModel(listSub: subCategories,products: productModels);
   return model;
@@ -218,9 +228,9 @@ Future<void> deleteAddress(String username,
         Constant.snak(error.toString()));
     return error;
   });
+  print(response.body);
   var result = jsonDecode(response.body);
 
-  print(result);
     if(result["result"] == "ok"){
       //todo replacement 2 way: home , profile
     }else  globalKey.currentState.showSnackBar(
@@ -251,7 +261,7 @@ Future<void> editAddress(LocationModel request,String username,
   });
   var result = jsonDecode(response.body);
 
-  print(result);
+  print(response.body);
   if(result["result"] == "ok"){
     //todo replacement 2 way: home , profile
   }else  globalKey.currentState.showSnackBar(
@@ -269,7 +279,6 @@ Future<void> addAddress(LocationModel request,String username,
     "lng": request.lng,
   };
   var bytes = utf8.encode(json.encode(_body));
-
   var response = await http.post(
     url + "add_address.php",
     body: bytes,
@@ -281,8 +290,16 @@ Future<void> addAddress(LocationModel request,String username,
   });
   var result = jsonDecode(response.body);
 
-  print(result);
+  print(response.body);
   if(result["result"] == "ok"){
+    SharedPreferences sahredprfrenc;
+    SharedPreferences.getInstance().then((prefs) {
+      sahredprfrenc=prefs;
+      sahredprfrenc.setString("address", request.address);
+      sahredprfrenc.setString("lat", request.lat.toString());
+      sahredprfrenc.setString("lng", request.lng.toString());
+
+    });
     //todo replacement 2 way: home , profile
   }else  globalKey.currentState.showSnackBar(
       Constant.snak("user Not found "));
@@ -312,6 +329,7 @@ Future<List<Address>> getAddresses(String userName, String password,
 
   var result = jsonDecode(response.body);
   printWrapped(response.body);
+
   if(result["result"]=="ok")
   {
     for(final i in result["addresses"])

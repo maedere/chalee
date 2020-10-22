@@ -29,9 +29,11 @@ class _SplashActivityState extends State<SplashActivity> {
       first = true;
     }
     if (first) {
+
       Navigator.pushReplacement(context,
       MaterialPageRoute(builder: (context) => ChooseLanguageActivity(),),);
     } else {
+
       String locData = prefs.getString("addressData");
       if(locData == null){
         Navigator.pushReplacement(context,

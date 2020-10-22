@@ -402,6 +402,59 @@
 //
 //   }
 // }
+//                     GestureDetector(
+//                       child: Icon(
+//                         Icons.remove_circle_outline,
+//                         size: 60.h,
+//                         color: ColorApp.primary,
+//                       ),
+//                       onTap: () {
+//                         setState(() {
+//                           product.count--;
+//                         });
+//                       },
+//                     ),
+//                   if (product.count > 0)
+//                     SizedBox(
+//                       width: 2,
+//                     ),
+//                   if (product.count > 0) Text(product.count.toString()),
+//                   if (product.count > 0)
+//                     SizedBox(
+//                       width: 2,
+//                     ),
+//                   if (product.count > 0)
+//                     GestureDetector(
+//                       child: Icon(
+//                         Icons.add_circle_outline,
+//                         size: 60.h,
+//                         color: ColorApp.primary,
+//                       ),
+//                       onTap: () {
+//                         setState(() {
+//                           if(product.count+1<=product.available)
+//                             product.count++;
+//
+//                         });
+//                       },
+//                     ),
+//                 ],
+//               )
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void _check(ProductModel p){
+//     if(p.count!=null)
+//       if(p.count > 0){
+//         check = true;
+//       }
+//
+//   }
+// }
 import 'package:chalee/elements/ProductMenu.dart';
 import 'package:chalee/model/json/ProductModel.dart';
 import 'package:chalee/screens/CheckOut.dart';
@@ -522,128 +575,133 @@ class _MenuState extends State<Menu> {
       username =(sahredprfrenc.getString("username"));
     });
 
+<<<<<<< Updated upstream
 
+=======
+//   check = false;
+    //   _showCheckout();
+>>>>>>> Stashed changes
     return Stack(
-      children: [
-        Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: ColorApp.primary)),
-                child: DropdownButton<String>(
-                  //todo fuck
-                  //  value: dropdownValue,
-                  hint: Text(
-                    dropdownValue,
-                    style: TextStyle(
-                        fontFamily: "main", color: Colors.black, fontSize: 15),
-                  ),
-                  dropdownColor: Colors.white,
-                  isExpanded: true,
-                  icon: Padding(
-                    padding: EdgeInsets.only(
-                      left: 10,
-                    ),
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.black,
-                    ),
-                  ),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "main"),
-                  underline: SizedBox(),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropdownValue = newValue;
-                      for(final i in _listSub){
-                        if(i.name==dropdownValue)
-                          categoryid=i.id;
-                      }
-                      _listProductShow=[];
-                      for(final i in _listProduct)
-                      {
+    children: [
+    Column(
+    children: [
+    Padding(
+    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    child: Container(
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    decoration: BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(color: ColorApp.primary)),
+    child: DropdownButton<String>(
+    //todo fuck
+    //  value: dropdownValue,
+    hint: Text(
+    dropdownValue,
+    style: TextStyle(
+    fontFamily: "main", color: Colors.black, fontSize: 15),
+    ),
+    dropdownColor: Colors.white,
+    isExpanded: true,
+    icon: Padding(
+    padding: EdgeInsets.only(
+    left: 10,
+    ),
+    child: Icon(
+    Icons.arrow_drop_down,
+    color: Colors.black,
+    ),
+    ),
+    iconSize: 24,
+    elevation: 16,
+    style: TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    fontFamily: "main"),
+    underline: SizedBox(),
+    onChanged: (String newValue) {
+    setState(() {
+    dropdownValue = newValue;
+    for(final i in _listSub){
+    if(i.name==dropdownValue)
+    categoryid=i.id;
+    }
+    _listProductShow=[];
+    for(final i in _listProduct)
+    {
 
-                        if(i.categoryId==categoryid)
-                        {
-                          _listProductShow.add(i);
-                        }
-                      }
-                      if(dropdownValue=="Select Category" || dropdownValue=="All")
-                      {
-                        _listProductShow=_listProduct;
-                      }
+    if(i.categoryId==categoryid)
+    {
+    _listProductShow.add(i);
+    }
+    }
+    if(dropdownValue=="Select Category" || dropdownValue=="All")
+    {
+    _listProductShow=_listProduct;
+    }
 
-                    });
-                  },
-                  items: _listSub.map((e){return  e.name;}).toList()
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(
-                        value,
-                        style: TextStyle(
-                            color: ColorApp.primary,
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: "main"),
-                      ),
-                    );
+    });
+    },
+    items: _listSub.map((e){return  e.name;}).toList()
+        .map<DropdownMenuItem<String>>((String value) {
+    return DropdownMenuItem<String>(
+    value: value,
+    child: Text(
+    value,
+    style: TextStyle(
+    color: ColorApp.primary,
+    fontSize: 17,
+    fontWeight: FontWeight.bold,
+    fontFamily: "main"),
+    ),
+    );
 
-                  }).toList(),
+    }).toList(),
 
-                ),
-              ),
-            ),
-            Expanded(
-              child: GridView.count(
-                  padding: EdgeInsets.all(8),
-                  crossAxisCount: 2,
-                  scrollDirection: Axis.vertical,
-                  childAspectRatio: 1,
-                  children: //_listProduct.length > 0 ?
-                  _listProductShow.map((e){
-                    return _productMenu(e);
-                  }).toList()
+    ),
+    ),
+    ),
+    Expanded(
+    child: GridView.count(
+    padding: EdgeInsets.all(8),
+    crossAxisCount: 2,
+    scrollDirection: Axis.vertical,
+    childAspectRatio: 1,
+    children: //_listProduct.length > 0 ?
+    _listProductShow.map((e){
+    return _productMenu(e);
+    }).toList()
 
-              ),
-            ),
-          ],
-        ),
-        if (check)
-          Align(
-            alignment: AlignmentDirectional.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: 30.h,
-              ),
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30),),
-                padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
-                onPressed: () => {
-                  Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => MyCartActivity(),),),
-                },
-                child: Text(
-                  "Check Out",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: "main",
-                  ),
-                ),
-                color: ColorApp.primary,
-              ),
-            ),
-          )
-      ],
+    ),
+    ),
+    ],
+    ),
+    if (check)
+    Align(
+    alignment: AlignmentDirectional.bottomCenter,
+    child: Padding(
+    padding: EdgeInsets.symmetric(
+    vertical: 30.h,
+    ),
+    child: RaisedButton(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30),),
+    padding: EdgeInsets.symmetric(horizontal: 30 , vertical: 10),
+    onPressed: () => {
+    Navigator.pushReplacement(context,
+    MaterialPageRoute(builder: (context) => MyCartActivity(),),),
+    },
+    child: Text(
+    "Check Out",
+    style: TextStyle(
+    color: Colors.white,
+    fontFamily: "main",
+    ),
+    ),
+    color: ColorApp.primary,
+    ),
+    ),
+    )
+    ],
     );
   }
 
@@ -745,8 +803,30 @@ class _MenuState extends State<Menu> {
                     (product.price-(product.discount*product.price/100)).toStringAsFixed(2).toString(),
                     style: TextStyle(color: ColorApp.primary,  fontSize: MediaQuery.of(context).size.width/30),
                   ),
+<<<<<<< Updated upstream
                   SizedBox(
                     width: 0,
+=======
+                  IconButton(
+                    icon:like == true? Icon(
+                      Icons.favorite,
+                      color: ColorApp.primary,
+                      size: MediaQuery.of(context).size.width/25,
+
+                    ):Icon(
+                      Icons.favorite_border,
+                      color: ColorApp.primary,
+                      size: MediaQuery.of(context).size.width/25,
+                    ),
+                    onPressed: (){
+                      like==true?addFavoritegood(username,password,product.id, _key):
+                      deleteFavoriteGood(username,password,product.id, _key);
+                      print(like);
+                      setState(() {
+                        like=!like;
+                      });
+                    },
+>>>>>>> Stashed changes
                   ),
 
                   
@@ -759,7 +839,7 @@ class _MenuState extends State<Menu> {
                         });
 
                         if (!Constant.orders.contains(product)) {
-                          Constant.orders.add(product);
+                        Constant.orders.add(product);
                         }
                       },
                       child: Container(
@@ -837,4 +917,3 @@ class _MenuState extends State<Menu> {
 
   }
 }
-
