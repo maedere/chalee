@@ -60,13 +60,10 @@ class _ProfileState extends State<Profile> {
       email =(sahredprfrenc.getString("email"));
       username=(sahredprfrenc.getString("username"));
       password=(sahredprfrenc.getString("password"));
-<<<<<<< Updated upstream
 
-=======
       address=(sahredprfrenc.getString("address"));
       lat=(sahredprfrenc.getString("lat"));
       lng=(sahredprfrenc.getString("lng"));
->>>>>>> Stashed changes
 
     });
     return Scaffold(

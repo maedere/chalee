@@ -575,12 +575,9 @@ class _MenuState extends State<Menu> {
       username =(sahredprfrenc.getString("username"));
     });
 
-<<<<<<< Updated upstream
 
-=======
 //   check = false;
     //   _showCheckout();
->>>>>>> Stashed changes
     return Stack(
     children: [
     Column(
@@ -803,10 +800,9 @@ class _MenuState extends State<Menu> {
                     (product.price-(product.discount*product.price/100)).toStringAsFixed(2).toString(),
                     style: TextStyle(color: ColorApp.primary,  fontSize: MediaQuery.of(context).size.width/30),
                   ),
-<<<<<<< Updated upstream
                   SizedBox(
-                    width: 0,
-=======
+                    width: 0),
+
                   IconButton(
                     icon:like == true? Icon(
                       Icons.favorite,
@@ -826,7 +822,7 @@ class _MenuState extends State<Menu> {
                         like=!like;
                       });
                     },
->>>>>>> Stashed changes
+
                   ),
 
                   
