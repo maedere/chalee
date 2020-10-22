@@ -48,7 +48,13 @@ class _EditPasswordState extends State<EditPassword> {
             fontFamily: "main",
           ),
         ),
-        leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed:null),
+        leading: IconButton(icon: Icon(Icons.arrow_back_ios),
+          onPressed: (){
+            Navigator.pop(
+              context,
+            );
+          },
+          color: Colors.grey,),
       ),
       body: SafeArea(
         child: Container(
@@ -148,6 +154,7 @@ class _EditPasswordState extends State<EditPassword> {
                         }
                         else
                         {
+
 
                           var future = editPass(username,password,newpass.text,firstname,lastName,email, _key);
                           password=newpass.text;

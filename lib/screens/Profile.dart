@@ -7,15 +7,20 @@ import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'EditPassword.dart';
+import 'Setting.dart';
 String firstname="";
 String lastname="";
 String email="";
 String username="";
 String password="";
 List<Address> addresses=[];
+TextEditingController fn = new TextEditingController();
+TextEditingController ln = new TextEditingController();
+TextEditingController em = new TextEditingController();
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -30,14 +35,18 @@ class _ProfileState extends State<Profile> {
   //todo add edit
   @override
   Widget build(BuildContext context) {
+    print("profile");
     SharedPreferences sahredprfrenc;
     SharedPreferences.getInstance().then((prefs) {
       sahredprfrenc=prefs;
+
       firstname =(sahredprfrenc.getString("firstname"));
       lastname =(sahredprfrenc.getString("lastName"));
       email =(sahredprfrenc.getString("email"));
       username=(sahredprfrenc.getString("username"));
       password=(sahredprfrenc.getString("password"));
+
+
     });
     return Scaffold(
       appBar: AppBar(
@@ -56,16 +65,42 @@ class _ProfileState extends State<Profile> {
             Navigator.pop(
               context,
             );
+
+
           },
           color: Colors.grey,),
         actions: [
           IconButton(icon: edit==false? Icon(FlutterIcons.pencil_alt_faw5s) :Icon(Icons.check),
             onPressed:(){
-            setState(() {
-              edit=!edit;
+            if(edit==true)
+            {
+              if(fn.text!="")
+              {
+                firstname=fn.text;
+              }
+              if(ln.text!="")
+              {
+                lastname=ln.text;
+                print(ln.text+"___");
+              }
+              if(em.text!="")
+              {
+                email=em.text;
+              }
 
-            });
-            },
+
+                editPass(username,password,password,firstname,lastname,email, _key).then((value){
+                setState(() {
+                  edit = !edit;
+                });
+              });
+            }
+            else {
+                  setState(() {
+                    edit = !edit;
+                  });
+                }
+              },
               color: Colors.grey)
         ],
       ),
@@ -75,7 +110,7 @@ class _ProfileState extends State<Profile> {
           child: Column(
             children: [
               SizedBox(
-                height: 20,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Row(
                 children: [
@@ -123,11 +158,11 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Divider(),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Row(
                 children: [
@@ -150,6 +185,7 @@ class _ProfileState extends State<Profile> {
                         fontFamily: "main",
                       ),
                     ): TextField(
+                      controller: fn,
                       decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: firstname,
@@ -161,11 +197,11 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Divider(),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Row(
                 children: [
@@ -189,6 +225,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ):
                     TextField(
+                      controller: ln,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: lastname,
@@ -199,11 +236,11 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Divider(),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Row(
                 children: [
@@ -227,6 +264,7 @@ class _ProfileState extends State<Profile> {
                       ),
                     ):
                     TextField(
+                      controller: em,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: email,
@@ -237,11 +275,11 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               Divider(),
               SizedBox(
-                height: 10,
+                height: MediaQuery.of(context).size.height/25,
               ),
               edit==true?Expanded (
                 child: Align(

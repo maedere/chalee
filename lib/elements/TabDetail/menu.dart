@@ -416,6 +416,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 String password;
 String username;
+var allGood = <Map<String, dynamic>>[];
 
 class Menu extends StatefulWidget {
 
@@ -438,11 +439,13 @@ class _MenuState extends State<Menu> {
   List<ProductModel> _listProduct = [];
 
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  List <String> goodLiked=[];
 
   @override
   void initState() {
 
-    getFavotitegood(username,password,_key);
+
+
     getProducts(ShopProductRequest(shopId: widget.shopId , rangeId: 0 , subcategoryId: "-1"), _key).then((value){
       setState(() {
         if(value != null) {
@@ -475,6 +478,26 @@ class _MenuState extends State<Menu> {
 
 
       });
+      getFavotitegood(username,password,_key).then((value){
+        setState(() {
+          goodLiked=value;
+          for(final i in goodLiked)
+            print(i+"__________");
+          for(final i in _listProductShow){
+            //print(i.id+"   00    "+i.like.toString());
+            for(final j in goodLiked)
+            {
+              print(i.id+j);
+              if(i.id==j)
+              {
+                i.like=true;
+                print("88888");
+              }
+            }
+          }
+
+        });
+      });
     });
 
     super.initState();
@@ -482,6 +505,17 @@ class _MenuState extends State<Menu> {
 
   @override
   Widget build(BuildContext context) {
+
+ for( final d in allGood)
+   {
+     for(final i in d.entries)
+       {
+
+       }
+   }
+
+
+
     SharedPreferences.getInstance().then((prefs) {
       var sahredprfrenc=prefs;
       password =(sahredprfrenc.getString("password"));
@@ -489,8 +523,6 @@ class _MenuState extends State<Menu> {
     });
 
 
-    //   check = false;
-    //   _showCheckout();
     return Stack(
       children: [
         Column(
@@ -618,6 +650,7 @@ class _MenuState extends State<Menu> {
 
   Widget _productMenu(ProductModel product) {
     _check(product);
+
     return GestureDetector(
       onTap: () {
 
@@ -649,12 +682,51 @@ class _MenuState extends State<Menu> {
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Expanded(
-                child: Hero(
-                  tag: product.name,
-                  child: Image.network(product.image,height: 100,width:100 ),
 
-                ),
+
+
+
+
+              Expanded(
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                        decoration: new BoxDecoration(color: Colors.white),
+                        alignment: Alignment.center,
+                        height: 240,
+                        child: Image.network(product.image,fit: BoxFit.fill)
+                    ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon:product.like==true ? Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                          size: MediaQuery.of(context).size.width/15,
+
+                        ):Icon(
+                          Icons.favorite_border,
+                          color: Colors.red,
+                          size: MediaQuery.of(context).size.width/15,
+                        ),
+                        onPressed: (){
+                          product.like==false?addFavoritegood(username,password,product.id, _key).then((value) {
+                            setState(() {
+                              product.like=!product.like;
+                              print(product.id+"00"+product.like.toString());
+                            });
+                          }):
+                          deleteFavoriteGood(username,password,product.id, _key).then((value) {
+                            setState(() {
+                              product.like=!product.like;
+                              print(product.id+"00"+product.like.toString());
+                            });
+                          });
+                        },
+                      ),
+                    )
+                  ],
+                )
               ),
               Align(
                   alignment: AlignmentDirectional.topStart,
@@ -662,34 +734,22 @@ class _MenuState extends State<Menu> {
                     product.name,
                     textAlign: TextAlign.start,
                   )),
+
               Row(
                 children: [
                   Text(
                     product.price.toString(),
-                    style: TextStyle(color: Colors.red, fontSize: 15,decoration: TextDecoration.lineThrough),
+                    style: TextStyle(color: Colors.red, fontSize: MediaQuery.of(context).size.width/33,decoration: TextDecoration.lineThrough),
                   ),
                   Text(
                     (product.price-(product.discount*product.price/100)).toStringAsFixed(2).toString(),
-                    style: TextStyle(color: ColorApp.primary, fontSize: 15),
+                    style: TextStyle(color: ColorApp.primary,  fontSize: MediaQuery.of(context).size.width/30),
                   ),
-                  IconButton(
-                    icon:like == true? Icon(
-                      Icons.favorite,
-                      color: ColorApp.primary,
-                    ):Icon(
-                      Icons.favorite_border,
-                      color: ColorApp.primary,
-                    ),
-                    onPressed: (){
-                      like==true?addFavoritegood(username,password,product.id, _key):
-                      deleteFavoriteGood(username,password,product.id, _key);
-                      print(like);
-                      setState(() {
-                        like=!like;
-                      });
-                    },
+                  SizedBox(
+                    width: 0,
                   ),
 
+                  
                   Expanded(child: SizedBox()),
                   if (product.count == 0)
                     GestureDetector(
@@ -703,8 +763,8 @@ class _MenuState extends State<Menu> {
                         }
                       },
                       child: Container(
-                        width: 130.w,
-                        height: 60.h,
+                        width: MediaQuery.of(context).size.width/9.5,
+                        height: MediaQuery.of(context).size.height/30,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(
                             40,
@@ -727,7 +787,7 @@ class _MenuState extends State<Menu> {
                     GestureDetector(
                       child: Icon(
                         Icons.remove_circle_outline,
-                        size: 60.h,
+                        size: MediaQuery.of(context).size.height/40,
                         color: ColorApp.primary,
                       ),
                       onTap: () {
@@ -738,18 +798,18 @@ class _MenuState extends State<Menu> {
                     ),
                   if (product.count > 0)
                     SizedBox(
-                      width: 2,
+                      width: MediaQuery.of(context).size.width/500,
                     ),
                   if (product.count > 0) Text(product.count.toString()),
                   if (product.count > 0)
                     SizedBox(
-                      width: 2,
+                      width: MediaQuery.of(context).size.width/500,
                     ),
                   if (product.count > 0)
                     GestureDetector(
                       child: Icon(
                         Icons.add_circle_outline,
-                        size: 60.h,
+                        size: MediaQuery.of(context).size.height/40,
                         color: ColorApp.primary,
                       ),
                       onTap: () {

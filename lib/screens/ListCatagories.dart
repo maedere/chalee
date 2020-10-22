@@ -38,13 +38,13 @@ class ListCatagories extends StatelessWidget {
   Widget _list(BuildContext context, MainCatagory main) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 2.5,
+      height: MediaQuery.of(context).size.height / 2.15,
       child: Center(
         child: Column(
           children: [
 
             SizedBox(
-              height: 10,
+              height: MediaQuery.of(context).size.height / 200,
             ),
             Align(
               alignment: AlignmentDirectional.bottomEnd,
@@ -56,8 +56,8 @@ class ListCatagories extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-                        width: 50,
-                        height: 50,
+                        width: MediaQuery.of(context).size.width/8,
+                        height: MediaQuery.of(context).size.height/10,
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         decoration: BoxDecoration(
                             color: Colors.white.withOpacity(.7),

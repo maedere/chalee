@@ -36,7 +36,8 @@ class ProductModel {
       this.discount,
       this.description,
       this.shopId,
-      this.count
+      this.count,
+      this.like
       );
 
   ProductModel.send({
@@ -69,6 +70,7 @@ class ProductModel {
   double discount;
   String description;
   int shopId;
+  bool like;
 
   //request
   String username;

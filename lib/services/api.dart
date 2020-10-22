@@ -17,6 +17,7 @@ import 'package:chalee/screens/VerificationActivity.dart';
 import 'package:chalee/util/Constant.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String url = "https://newreza.ir/chale/php/customer/";
@@ -183,7 +184,7 @@ Future<DetailProductModel> getProducts(ShopProductRequest request,
         subCategories.add(new SubCategories(i["id"],i["name"]));
       
     for(final i in result["goods"])
-      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"]),0));
+      productModels.add(new ProductModel(int.parse(i["availability"]), i["id"], i["spicy"], i["feed_Type"], i["calories"], double.parse(i["rate"]), i["image_url"], i["name"], i["subcategory_id"], double.parse(i["price"]), double.parse(i["discount"]), i["description"], int.parse(i["shop_id"]),0,false));
     //print(result["goods"]);
    // model = DetailProductModel(listSub: subCategoriesListFromJson(result["subcategories"]), products: productsFromJson(result["goods"]));
   }
@@ -538,7 +539,7 @@ Future<String> postShopComment(String username,String password,String shop_id,St
 
 }
 
-Future<void> addFavoritegood(String username,String password,String goodId,
+Future<String> addFavoritegood(String username,String password,String goodId,
     GlobalKey<ScaffoldState> globalKey) async {
 
   var _body = <String, dynamic> {
@@ -557,11 +558,11 @@ Future<void> addFavoritegood(String username,String password,String goodId,
 
   var result = jsonDecode(response.body);
 
-  print(result);
-  return;
+  print(result.toString()+"add");
+  return "";
 }
 
-Future<void> deleteFavoriteGood(String username,String password,String goodId,
+Future<String> deleteFavoriteGood(String username,String password,String goodId,
     GlobalKey<ScaffoldState> globalKey) async {
 
   var _body = <String, dynamic> {
@@ -580,11 +581,11 @@ Future<void> deleteFavoriteGood(String username,String password,String goodId,
 
   var result = jsonDecode(response.body);
 
-  print(result);
-  return;
+  print(result.toString()+"delete");
+  return "";
 }
 
-Future<void> getFavotitegood(String username,String password,
+Future<List<String>> getFavotitegood(String username,String password,
     GlobalKey<ScaffoldState> globalKey) async {
 
   var _body = <String, dynamic> {
@@ -602,8 +603,14 @@ Future<void> getFavotitegood(String username,String password,
 
   var result = jsonDecode(response.body);
 
-  print(result);
-  return;
+  print("555555555555555555555555555555"+response.body+"555555555555555555555555555555");
+  List<String> good_liked=[];
+  for(final i in result["goods"]){
+    good_liked.add(i["good_id"].toString());
+    print(i["good_id"]+"666666666");
+  }
+
+  return good_liked;
 }
 Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {
@@ -621,7 +628,7 @@ Future<void> editPass(String username,String password,String newpass,String firs
     url + "edit_profile.php",
     body: bytes,
   ).catchError((error) {
-    print(error.toString()+"******************************");
+    print(error.toString()+"**********");
   });
 
 
@@ -630,8 +637,10 @@ Future<void> editPass(String username,String password,String newpass,String firs
 
   prefs.setString("password", newpass);
   prefs.setString("firstname", firstname);
-  prefs.setString("last_name", lastname);
-  prefs.setString("mail", mail);
-  print(firstname);
+  prefs.setString("lastName", lastname);
+  prefs.setString("email", mail);
+
+
+
   return;
 }
