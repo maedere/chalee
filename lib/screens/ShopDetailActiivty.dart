@@ -2,12 +2,16 @@ import 'package:chalee/elements/TabDetail/About.dart';
 import 'package:chalee/elements/TabDetail/Reviews.dart';
 import 'package:chalee/elements/TabDetail/menu.dart';
 import 'package:chalee/model/json/ShopModel.dart';
+import 'package:chalee/services/api.dart';
 import 'package:chalee/value/ColorApp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+List <String> shopLiked=[];
+bool like=false;
+
 
 class ShopDetailActivity extends StatefulWidget {
-
   final Shop shop;
   int currentindex=0;
   ShopDetailActivity({@required this.shop});
@@ -18,7 +22,32 @@ class ShopDetailActivity extends StatefulWidget {
 
 class _ShopDetailActivityState extends State<ShopDetailActivity> {
   @override
+  void initState()
+  {
+    getFavotiteshop(username,password,_key).then((value){
+
+      setState(() {
+        for(final i in value)
+          shopLiked.add(i.shopId);
+
+        for(final i in shopLiked)
+          {
+            print(i+"000000000000000000000000000000000");
+            print(widget.shop.shopId+"888888");
+            if(widget.shop.shopId==i) {
+              widget.shop.like=true;
+              print("kjkjllllllllllllllllll");
+
+            }
+
+          }
+
+      });
+    });
+  }
+  @override
   Widget build(BuildContext context) {
+
 
     return DefaultTabController(
       length: 3,
@@ -70,6 +99,35 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
                                           ],
                                         ),
                                       ),
+                                      Align(
+                                        alignment: Alignment.topRight,
+                                        child: IconButton(
+                                          icon:widget.shop.like==true ? Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                            size: MediaQuery.of(context).size.width/15,
+
+                                          ):Icon(
+                                            Icons.favorite_border,
+                                            color: Colors.red,
+                                            size: MediaQuery.of(context).size.width/15,
+                                          ),
+                                          onPressed: (){
+                                            widget.shop.like==false?addFavoriteshop(username,password,widget.shop.shopId, _key).then((value) {
+                                              setState(() {
+                                                widget.shop.like=!widget.shop.like;
+                                              });
+                                            }):
+
+                                            /*deleteFavoriteshop(username,password,widget.shop.shopId, _key).then((value) {*/
+                                              setState(() {
+                                                widget.shop.like=!widget.shop.like;
+                                              });
+                                            /*});*/
+
+                                          },
+                                        ),
+                                      ),
                                       Container(
                                         width: 50,
                                         height: 25,
@@ -81,6 +139,9 @@ class _ShopDetailActivityState extends State<ShopDetailActivity> {
                                             ),
                                           ),
                                         ),
+
+
+
                                         child: Center(
                                           child: Text(
                                             widget.shop.activity == "true" ? "open" : "close",

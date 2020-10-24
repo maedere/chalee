@@ -19,7 +19,6 @@ class ResopnsShop {
 
   factory ResopnsShop.fromJson(Map<String, dynamic> json) => ResopnsShop(
     result: json["result"],
-    shops: List<Shop>.from(json["shops"].map((x) => Shop.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
@@ -29,7 +28,7 @@ class ResopnsShop {
 }
 
 class Shop {
-  Shop({
+  Shop(
     this.shopId,
     this.name,
     this.city,
@@ -42,7 +41,8 @@ class Shop {
     this.rate,
     this.imageUrl,
     this.categoryId,
-  });
+    this.like,
+  );
 
   String shopId;
   String name;
@@ -56,21 +56,9 @@ class Shop {
   String rate;
   String imageUrl;
   String categoryId;
+  bool like;
 
-  factory Shop.fromJson(Map<String, dynamic> json) => Shop(
-    shopId: json["shop_id"],
-    name: json["name"],
-    city: json["city"],
-    address: json["address"],
-    lat: json["lat"],
-    lng: json["lng"],
-    discount: json["discount"],
-    activity: json["activity"],
-    activityTime: json["activity_time"],
-    rate: json["rate"],
-    imageUrl: json["image_url"],
-    categoryId: json["category_id"],
-  );
+
 
   Map<String, dynamic> toJson() => {
     "shop_id": shopId,

@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 
 class ShopEleFav extends StatelessWidget{
 
-  final String id;
+  final String shopid;
+  final String name;
+  final String img;
+  final String city;
 
-  ShopEleFav({@required this.id});
+  ShopEleFav(this.shopid, this.name, this.img, this.city);
+
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,8 @@ class ShopEleFav extends StatelessWidget{
       onTap: (){
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ShopDetailActivity(shop: Shop(shopId: "0"))),
-        );
+          MaterialPageRoute(builder: (context) => ShopDetailActivity(shop: Shop(shopid,name,city,"","","",0,"","","",img,"",true)),
+        ));
       },
       child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10 , vertical: 5),
@@ -28,7 +32,7 @@ class ShopEleFav extends StatelessWidget{
         child: Row(
           children: [
             Hero(
-              tag: "saeed" + id.toString(),
+              tag: shopid ,
               child: Image(
                 image: AssetImage(
                   'assets/images/logoo.jpg',
@@ -47,11 +51,11 @@ class ShopEleFav extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Test shop",
+                    name,
                     style: TextStyle(fontSize: 15, color: Colors.black),
                   ),
                   Text(
-                    "shop test 1",
+                    city,
                     style: TextStyle(fontSize: 13, color: Colors.grey),
                   ),
                 ],

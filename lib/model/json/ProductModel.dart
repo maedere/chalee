@@ -6,21 +6,7 @@ import 'dart:convert';
 String productToJson(ProductModel data) => json.encode(data.toJson());
 
 class ProductModel {
- /* ProductModel({
-    this.available,
-    this.id,
-    this.spicy,
-    this.feed_Type,
-    this.calory,
-    this.rate,
-    this.image,
-    this.name,
-    this.categoryId,
-    this.price,
-    this.discount,
-    this.description,
-    this.shopId
-  });*/
+
 
   ProductModel(
       this.available,

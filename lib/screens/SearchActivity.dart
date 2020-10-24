@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'dart:async';
 
@@ -201,7 +202,8 @@ class _SearchActivityState extends State<SearchActivity> {
                       if(shops.length > 0)
                         for(Shop s in shops)
                           ShopElement(shop: s),
-                      /*      ShopElement(
+                      */
+/*      ShopElement(
                         shop: Shop(username: "0"),
                       ),
                       ShopElement(
@@ -212,16 +214,19 @@ class _SearchActivityState extends State<SearchActivity> {
                       ),
                       ShopElement(
                         shop: Shop(username: "3"),
-                      ),*/
+                      ),*//*
+
                       SizedBox(height: 130.h,)
                     ],
                   ),
-                  /*    child: shops.length > 0 ? ListView.builder(
+                  */
+/*    child: shops.length > 0 ? ListView.builder(
                     scrollDirection: Axis.vertical,
                    itemBuilder: (context , i){
                       return ShopElement(id: ,)
                    },
-                  ):CircularProgressIndicator(value: 10,)*/
+                  ):CircularProgressIndicator(value: 10,)*//*
+
                 )
               ],
             ),
