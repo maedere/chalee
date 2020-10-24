@@ -57,6 +57,7 @@ class Goods {
     this.price,
     this.discount,
     this.count,
+      this.shopName
   );
 
 
@@ -67,6 +68,7 @@ class Goods {
   double price;
   double discount;
   int count;
+  String shopName;
 
 
 Map<String, dynamic> toJson() => {

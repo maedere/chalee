@@ -533,7 +533,9 @@ class _MenuState extends State<Menu> {
       });
       getFavotitegood(username,password,_key).then((value){
         setState(() {
-          goodLiked=value;
+          for(final i in value)
+            goodLiked.add(i.id);
+
           for(final i in goodLiked)
             print(i+"__________");
           for(final i in _listProductShow){
@@ -803,27 +805,6 @@ class _MenuState extends State<Menu> {
                   SizedBox(
                     width: 0),
 
-                  IconButton(
-                    icon:like == true? Icon(
-                      Icons.favorite,
-                      color: ColorApp.primary,
-                      size: MediaQuery.of(context).size.width/25,
-
-                    ):Icon(
-                      Icons.favorite_border,
-                      color: ColorApp.primary,
-                      size: MediaQuery.of(context).size.width/25,
-                    ),
-                    onPressed: (){
-                      like==true?addFavoritegood(username,password,product.id, _key):
-                      deleteFavoriteGood(username,password,product.id, _key);
-                      print(like);
-                      setState(() {
-                        like=!like;
-                      });
-                    },
-
-                  ),
 
                   
                   Expanded(child: SizedBox()),

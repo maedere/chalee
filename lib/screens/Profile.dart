@@ -21,6 +21,7 @@ String password="";
 String address="";
 String lat="";
 String lng="";
+int selectedAddress=0;
 List<Address> addresses=[];
 TextEditingController fn = new TextEditingController();
 TextEditingController ln = new TextEditingController();
@@ -64,6 +65,8 @@ class _ProfileState extends State<Profile> {
       address=(sahredprfrenc.getString("address"));
       lat=(sahredprfrenc.getString("lat"));
       lng=(sahredprfrenc.getString("lng"));
+
+      print(address+"---"+lat+"---"+lng);
 
     });
     return Scaffold(
@@ -148,11 +151,16 @@ class _ProfileState extends State<Profile> {
                       color: ColorApp.primary,
                     ),
                     onPressed: (){
+                      getAddresses(username,password,_key).then((value){
+                        setState(() {
+                          addresses=value;
+                        });
+                        showDialog(
+                          context: context,
+                          builder: (_) => AddressDialog(addresses),
+                        );
+                      });
 
-                       showDialog(
-                         context: context,
-                         builder: (_) => AddressDialog(),
-                       );
 
                     },
                   ):SizedBox(),
@@ -346,6 +354,10 @@ class _ProfileState extends State<Profile> {
 
 //-------------------------------
 class AddressDialog extends StatefulWidget {
+  List<Address> addressesDialog=[];
+
+  AddressDialog(this.addressesDialog);
+
   @override
   State<StatefulWidget> createState() => AddressDialogState();
 }
@@ -355,11 +367,26 @@ class AddressDialogState extends State<AddressDialog>
   AnimationController controller;
   Animation<double> scaleAnimation;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  String addressDialog="";
+  String latDialog="";
+  String lngDialog="";
+
+  AddressDialogState();
 
   @override
   void initState() {
     super.initState();
+    SharedPreferences sahredprfrenc;
+    SharedPreferences.getInstance().then((prefs) {
 
+      sahredprfrenc=prefs;
+      setState(() {
+        addressDialog=(sahredprfrenc.getString("address"));
+        latDialog=(sahredprfrenc.getString("lat"));
+        lngDialog=(sahredprfrenc.getString("lng"));
+      });
+
+    });
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     scaleAnimation =
@@ -374,6 +401,8 @@ class AddressDialogState extends State<AddressDialog>
 
   @override
   Widget build(BuildContext context) {
+
+
     return Center(
       child: Material(
         color: Colors.transparent,
@@ -487,9 +516,10 @@ class AddressDialogState extends State<AddressDialog>
   }
   List<Widget> addresse() {
     List<Widget> list = List();
-    List<int> locations=[1,2,4];
     //i<5, pass your dynamic limit as per your requirment
-    for (final i in addresses) {
+    for (final i in widget.addressesDialog) {
+      print(i.address+"+++"+i.lat+"+++"+i.lng);
+
       list.add(
         Container(
           width: MediaQuery.of(context).size.width,
@@ -526,12 +556,25 @@ class AddressDialogState extends State<AddressDialog>
                                     ],
                 ),),
                  IconButton( icon: Icon(
-                   (!(i.lat==lat && i.lng==lng && i.address==address))? Icons.check_box_outline_blank_sharp
+                   (!(latDialog.contains(i.lat.substring(0, i.lat.length - 1)) && lngDialog.contains(i.lng.substring(0, i.lng.length - 1)) && i.address==addressDialog))? Icons.check_box_outline_blank_sharp
                    :Icons.check_box_outlined,
                       color: Colors.black,
                     ),
                 onPressed: (){
+                  SharedPreferences sahredprfrenc;
+                  SharedPreferences.getInstance().then((prefs) {
+                    sahredprfrenc=prefs;
+                    sahredprfrenc.setString("address", i.address);
+                    sahredprfrenc.setString("lat", i.lat);
+                    sahredprfrenc.setString("lng", i.lng);
 
+                    setState(() {
+                      addressDialog=i.address;
+                      latDialog=i.lat;
+                      lngDialog=i.lng;
+
+                    });
+                  });
                 },),
                 IconButton( icon: Icon(
                       Icons.edit_location_outlined,
@@ -550,6 +593,15 @@ class AddressDialogState extends State<AddressDialog>
                     ),
                 onPressed: (){
                   deleteAddress(username,password,i.id,_key);
+                  setState(() {
+                    List<Address> addressesDialogtest=[];
+                    for(final j in widget.addressesDialog)
+                      if(j.id!=i.id)
+                        addressesDialogtest.add(j);
+                    widget.addressesDialog=  addressesDialogtest;
+
+                  });
+
                 },),
               ],
             ),
@@ -559,9 +611,5 @@ class AddressDialogState extends State<AddressDialog>
     }
     return list;// all widget added now retrun the list here
   }
-  void stateSetter() {
-    setState(() {
 
-    });
-  }
 }

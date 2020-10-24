@@ -51,6 +51,9 @@ Future<String> login(UserRegister userRegister,
       prefs.setString("password", driver.password.toString());
       prefs.setString("username", driver.username.toString());
       prefs.setString("wallet", driver.wallet.toString());
+      prefs.setString("address", "-");
+      prefs.setString("lat", "-");
+      prefs.setString("lng", "-");
       Constant.user = driver;
 
       Navigator.pushReplacement(globalKey.currentContext,
@@ -369,7 +372,7 @@ Future<List<Orders>> getOrder(String username,String password,String rangeId,
     {
       List<Goods> goods=[];
       for(final j in i["goods"])
-        goods.add(new Goods(j["id"],j["name"],j["image_url"],j["price"],j["discount"],j["count"]));
+        goods.add(new Goods(j["id"],j["name"],j["image_url"],j["price"],j["discount"],j["count"],""));
       orders.add(new Orders(i["id"],i["shop_id"],i["shop_name"],i["shop_image_url"],i["shop_accept_time"],i["total_payment"],i["time"],i["status"],goods));
     }
   }
@@ -603,9 +606,11 @@ Future<String> deleteFavoriteGood(String username,String password,String goodId,
   return "";
 }
 
-Future<List<String>> getFavotitegood(String username,String password,
+Future<List<Goods>> getFavotitegood(String username,String password,
     GlobalKey<ScaffoldState> globalKey) async {
 
+  List<Goods> goods=[];
+  print(username+"***"+password);
   var _body = <String, dynamic> {
     "username": username.toString(),
     "password": password.toString(),
@@ -621,14 +626,15 @@ Future<List<String>> getFavotitegood(String username,String password,
 
   var result = jsonDecode(response.body);
 
-  print("555555555555555555555555555555"+response.body+"555555555555555555555555555555");
+  print(response.body);
   List<String> good_liked=[];
   for(final i in result["goods"]){
     good_liked.add(i["good_id"].toString());
+    goods.add(Goods(i["good_id"],i["good_name"],i["good_image_url"],0.0,0.0,0,i["shop_name"]));
     print(i["good_id"]+"666666666");
   }
 
-  return good_liked;
+  return goods;
 }
 Future<void> editPass(String username,String password,String newpass,String firstname,String lastname,String mail,
     GlobalKey<ScaffoldState> globalKey) async {

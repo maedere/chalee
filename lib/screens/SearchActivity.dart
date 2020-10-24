@@ -78,7 +78,7 @@ class _SearchActivityState extends State<SearchActivity> {
                 color: Colors.black,
               ),
               onPressed: () {
-                print(username);
+                /*print(username);
                 getAddresses(username,password,_key).then((value){
                   setState(() {
                     addresses=value;
@@ -87,7 +87,17 @@ class _SearchActivityState extends State<SearchActivity> {
                 showDialog(
                   context: context,
                   builder: (_) => AddressDialog(),
-                );
+                );*/
+                getAddresses(username,password,_key).then((value){
+                  setState(() {
+                    addresses=value;
+                  });
+                  showDialog(
+                    context: context,
+                    builder: (_) => AddressDialog(addresses),
+                  );
+                });
+
               })
         ],
         centerTitle: true,
@@ -359,6 +369,7 @@ class _SearchActivityState extends State<SearchActivity> {
   }
 }
 //---------------------
+/*
 class AddressDialog extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => AddressDialogState();
@@ -509,4 +520,4 @@ class AddressDialogState extends State<AddressDialog>
     }
     return list;// all widget added now retrun the list here
   }
-}
+}*/
